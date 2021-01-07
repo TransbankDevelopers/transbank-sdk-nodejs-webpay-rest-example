@@ -10,5 +10,10 @@
 }
 
 .m-b-40 {
-  margin-bottom: 40px !important;
+  margin-bottom: 40px;
+}
+
+.hljs,
+.hsljs-subst {
+  background: transparent;
 }
