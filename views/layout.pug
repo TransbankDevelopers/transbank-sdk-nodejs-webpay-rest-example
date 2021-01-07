@@ -2,14 +2,16 @@ doctype html
 html
   head
     title= "Transbank SDK Nodejs"
-    link(rel='stylesheet', href='stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js')
     link(href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet')
+    link(rel='stylesheet' href='/stylesheets/highlight/atom-one-dark.css')
+    script(src='/javascripts/highlight.pack.js')
   nav.pink.darken-4(style='margin-bottom: 20px')
     .nav-wrapper.container
       a.brand-logo(href='/')
-        img(src='/images/tbk.png', alt="Logo Transbank Developers", height=30)
+        img(src='/images/tbk-nav.png', alt="Logo Transbank Developers", height=30)
       ul#nav-mobile.right.hide-on-med-and-down
         li
           a(href='/') Inicio
@@ -20,4 +22,7 @@ html
       block content
     script.
       M.AutoInit();
+    script.
+      hljs.initHighlightingOnLoad();
+
 

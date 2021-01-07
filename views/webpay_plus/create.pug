@@ -1,5 +1,91 @@
 extends template
 
 block step
-  h1 Hola
-    
+  .row
+    .col.m5
+      h5 Petición
+      p Para comenzar debes importar <code>WebpayPlus</code> y luego crear una transacción
+
+    .col.m7
+      pre.z-depth-2
+        code.js
+          | // ES5
+          | const WebpayPlus = require('transbank-sdk').WebpayPlus;
+          | // ES6
+          | import { WebpayPlus } from 'transbank-sdk';
+          |
+          | WebpayPlus.Transaction.create(buyOrder, sessionId, amount, returnUrl);
+  .row
+    .col.m8
+      pre.z-depth-2
+        code.json
+          | {
+          |  'token': '#{viewData.token}',
+          |  'url': '#{viewData.url}'
+          | }
+    .col.m4
+      h5 Respuesta
+      p Una vez creada la transacción, estos serán los datos de respuesta
+  .row
+    .col.m2
+      h5 Por ultimo
+      p Debes utilizar estos datos para crear un formulario
+    .col.m10
+      pre.z-depth-2
+        code.html
+          | #{'<form action="' + viewData.url + '" method="POST">'}
+          | #{'  <input type="hidden" name="token_ws" value="' + viewData.token + '"/>'}
+          br
+          | #{'   <input type="submit" value="Pagar"/>'}
+          br
+          | #{'</form>'}
+  .row
+    .col.m12
+      h4 Ejemplo
+  .row
+    .col.m6
+      h5 Creamos la transacción
+      p Usando los siguientes datos
+      table
+        thead
+          tr
+            th Campo
+            th Valor
+        tbody
+          tr
+            td
+              strong Orden de compra (buyOrder)
+            td #{viewData.buyOrder}
+
+          tr
+            td
+              strong ID de sesión (sessionid)
+            td #{viewData.sessionId}
+          tr
+            td
+              strong Monto (amount)
+            td #{viewData.amount}
+          tr
+            td
+              strong URL de retorno (returnUrl)
+            td #{viewData.returnUrl}
+    .col.m6
+      h5 Por ultimo
+      p Con la respuesta del servicio creamos el formulario, para efectos del ejemplo haremos el campo <code>token_ws</code> visible
+      .card-panel
+        form(action=viewData.url, method="POST", id="createForm")
+          p Formulario de redirección
+          br
+          .input-field
+            input(type="text", name="token_ws", value=viewData.token)
+            label.text-dard.text-lighten-2(for="token_ws") Token
+          .input-field.white-text
+            button.waves-effect.waves-light.btn.pink.white-text(type="submit") Pagar
+
+  .fixed-action-btn
+    a.btn-floating.btn-large.pink(onclick="submitFAB();")
+      i.large.material-icons navigate_next
+  script.
+    function submitFAB(){
+      document.getElementById('createForm').submit();
+    }
