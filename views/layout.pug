@@ -1,0 +1,23 @@
+doctype html
+html
+  head
+    title= "Transbank SDK Nodejs"
+    link(rel='stylesheet', href='stylesheets/style.css')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js')
+    link(href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet')
+  nav.pink.darken-4(style='margin-bottom: 20px')
+    .nav-wrapper.container
+      a.brand-logo(href='/')
+        img(src='/images/tbk.png', alt="Logo Transbank Developers", height=30)
+      ul#nav-mobile.right.hide-on-med-and-down
+        li
+          a(href='/') Inicio
+        li
+          a(href='http://www.transbankdevelopers.cl', target='_blank') Transbank Developers
+  body
+    .container
+      block content
+    script.
+      M.AutoInit();
+

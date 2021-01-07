@@ -1,0 +1,14 @@
+@media only screen and (max-width: 600px) {
+  .product {
+    height: 30px;
+  }
+}
+
+.product {
+  height: 80px;
+  width: auto;
+}
+
+.m-b-40 {
+  margin-bottom: 40px !important;
+}

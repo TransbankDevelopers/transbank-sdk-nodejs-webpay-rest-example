@@ -1,0 +1,49 @@
+extends layout
+
+block content
+  .row
+  .col.s12.m5
+    .card-panel.teal.lighten-1
+      span.white-text
+        | Bienvenido al proyecto de prueba del SDK de Transbank para NodeJS
+        br
+        | En este proyecto podas probar las diferentes modalidades de los productos que ofrece Transbank disponibles en el SDK
+  // Webpay Plus
+  .row.valign-wrapper.m-b-40
+    .col.m4.s12
+      img.valign.product(src='/images/wpplus.png')
+    .col.m8.s12
+      .collection
+        a.collection-item.pink-text.text-darken-2(href='webpay_plus/create') Webpay Plus
+        a.collection-item.pink-text.text-darken-2(href='#!') Webpay Plus Diferido
+        a.collection-item.pink-text.text-darken-2(href='#!') Webpay Plus Mall
+        a.collection-item.pink-text.text-darken-2(href='#!') Webpay Plus Mall Diferido
+  // Oneclick
+  .row.valign-wrapper.m-b-40
+    .col.m8.s12
+      .collection
+        a.collection-item.pink-text.text-darken-2(href='#!') Oneclick Mall
+        a.collection-item.pink-text.text-darken-2(href='#!') Oneclick Mall Diferido
+    .col.m4.s12
+      img.valign.product(src='/images/oneclick.png')
+  // Transacción Completa
+  .row.valign-wrapper.m-b-40
+    .col.m4.s12
+      img.valign.product(src='/images/txcompleta.png')
+    .col.m8.s12
+      .collection
+        a.collection-item.pink-text.text-darken-2(href='#!') Transsacción Completa
+        a.collection-item.pink-text.text-darken-2(href='#!') Transsacción Completa Mall
+  // Patpass
+  .row.valign-wrapper.m-b-40
+    .col.m8.s12
+      .collection
+        a.collection-item.pink-text.text-darken-2(href='#!') Patpass Comercio
+    .col.m4.s12
+      img.valign.product(src='/images/patpass.png')
+  
+  
+  
+
+
+
