@@ -10,4 +10,6 @@ router.use(function (req, res, next) {
 
 router.get("/create", webpay_plus_controller.create);
 
+router.post("/commit", webpay_plus_controller.commit);
+
 module.exports = router;

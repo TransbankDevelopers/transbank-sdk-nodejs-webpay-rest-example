@@ -9,12 +9,15 @@ block step
     .col.m7
       pre.z-depth-2
         code.js
-          | // ES5
-          | const WebpayPlus = require('transbank-sdk').WebpayPlus;
-          | // ES6
-          | import { WebpayPlus } from 'transbank-sdk';
+          | const WebpayPlus = require('transbank-sdk').WebpayPlus; // ES5
+          | import { WebpayPlus } from 'transbank-sdk'; // ES6
           |
-          | WebpayPlus.Transaction.create(buyOrder, sessionId, amount, returnUrl);
+          | let createResponse = await WebpayPlus.Transaction.create(
+          |   buyOrder, 
+          |   sessionId, 
+          |   amount, 
+          |   returnUrl
+          | ).catch(next);
   .row
     .col.m8
       pre.z-depth-2
