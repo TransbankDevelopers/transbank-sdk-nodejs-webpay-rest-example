@@ -1,0 +1,47 @@
+extends template
+block step
+  .row
+    .col.m4
+      h5 Petición
+      p 
+        | Para capturar una transacción necesitaremos el Token, Orden de compra, Código de 
+        | autorización y monto a capturar. Se hace de la siguiente manera.
+    .col.m8
+      pre.z-depth-2
+        code.js
+          | const captureResponse = await WebpayPlus.DeferredTransaction.capture(
+          |   token,
+          |   buyOrder,
+          |   authorizationCode,
+          |   captureAmount
+          | ).catch(next);
+  .row
+    .col.m8
+      pre.z-depth-2
+        code.json= JSON.stringify(viewData.captureResponse, null, ' ')
+    .col.m4
+      h5 Respuesta
+      p 
+        | Transbank contestará con lo siguiente.
+        | Debes guardar esta información, lo <strong>único</strong> que debes validar es 
+        | que <code>response_code</code> sea igual a cero.
+block actions
+  .row
+    .col.m12
+      h5 Otras utilidades
+      p 
+        | Luego de confirmada la transacción puedes Reembolsar (reversar o anular) el 
+        | pago dependiendo de ciertas condiciones comerciales. También puedes consultar el estado
+        | de la transacción hasta 7 días después de realizada.
+  .row
+    .col.m6
+      form(action="/webpay_plus_deferred/status", method="post")
+        input(type="hidden" value=viewData.token, name="token")
+        button(type="submit").btn.waves-effect.waves-light.pink.white-text Consultar Estado
+    .col.m6
+      form(action="/webpay_plus_deferred/refund", method="post")
+        button.btn.waves-effect.waves-light.pink.white-text(href="/webpay_plus_deferred/refund", type="submit") Reembolsar
+        input(type="hidden" value=viewData.token, name="token")
+        .input-field(style="margin-top: 25px")
+          input(type="number", name="amount", value=viewData.captureResponse.captured_amount)
+          label(for="amount") Monto a reembolsar:

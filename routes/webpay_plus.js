@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-var webpay_plus_controller = require("../controllers/webpay_plus");
+var webpayPlusController = require("../controllers/webpay_plus");
 const WebpayPlus = require("transbank-sdk").WebpayPlus;
 
 router.use(function (req, res, next) {
@@ -8,12 +8,12 @@ router.use(function (req, res, next) {
   next();
 });
 
-router.get("/create", webpay_plus_controller.create);
+router.get("/create", webpayPlusController.create);
 
-router.post("/commit", webpay_plus_controller.commit);
+router.post("/commit", webpayPlusController.commit);
 
-router.post("/status", webpay_plus_controller.status);
+router.post("/status", webpayPlusController.status);
 
-router.post("/refund", webpay_plus_controller.refund);
+router.post("/refund", webpayPlusController.refund);
 
 module.exports = router;

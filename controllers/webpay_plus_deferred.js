@@ -5,9 +5,12 @@ exports.create = async function (request, response, next) {
   let sessionId = "S-" + Math.floor(Math.random() * 10000) + 1;
   let amount = Math.floor(Math.random() * 1000) + 1001;
   let returnUrl =
-    request.protocol + "://" + request.get("host") + "/webpay_plus/commit";
+    request.protocol +
+    "://" +
+    request.get("host") +
+    "/webpay_plus_deferred/commit";
 
-  const createResponse = await WebpayPlus.Transaction.create(
+  const createResponse = await WebpayPlus.DeferredTransaction.create(
     buyOrder,
     sessionId,
     amount,
@@ -25,11 +28,11 @@ exports.create = async function (request, response, next) {
     token,
     url,
   };
-  response.render("webpay_plus/create", {
-    step: "Crear Transacción",
+  response.render("webpay_plus_deferred/create", {
+    step: "Crear Transacción diferida",
     stepDescription:
       "En este paso crearemos la transacción con el objetivo de obtener un identificador unico y " +
-      "poder en el siguiente paso redirigir al Tarjetahabiente hacia el formulario de pago",
+      "poder en el siguiente paso redirigir al Tarjetahabiente hacia el formulario de pago.",
     viewData,
   });
 };
@@ -37,15 +40,17 @@ exports.create = async function (request, response, next) {
 exports.commit = async function (request, response, next) {
   let token = request.body.token_ws;
 
-  const commitResponse = await WebpayPlus.Transaction.commit(token).catch(next);
+  const commitResponse = await WebpayPlus.DeferredTransaction.commit(
+    token
+  ).catch(next);
 
   let viewData = {
     token,
     commitResponse,
   };
 
-  response.render("webpay_plus/commit", {
-    step: "Confirmar Transacción",
+  response.render("webpay_plus_deferred/commit", {
+    step: "Confirmar Transacción diferida",
     stepDescription:
       "En este paso tenemos que confirmar la transacción con el objetivo de avisar a " +
       "Transbank que hemos recibido la transacción ha sido recibida exitosamente. En caso de que " +
@@ -54,18 +59,50 @@ exports.commit = async function (request, response, next) {
   });
 };
 
+exports.capture = async function (request, response, next) {
+  let token = request.body.token;
+  let buyOrder = request.body.buy_order;
+  let authorizationCode = request.body.authorization_code;
+  let captureAmount = request.body.capture_amount;
+
+  const captureResponse = await WebpayPlus.DeferredTransaction.capture(
+    token,
+    buyOrder,
+    authorizationCode,
+    captureAmount
+  ).catch(next);
+
+  let viewData = {
+    captureResponse,
+    token,
+    buyOrder,
+    authorizationCode,
+    captureAmount,
+  };
+
+  response.render("webpay_plus_deferred/capture", {
+    step: "Capturar Transacción diferida",
+    stepDescription:
+      "En este paso debemos capturar la transacción para realmente capturar el " +
+      "dinero que habia sido previamente reservado al hacer la transacción",
+    viewData,
+  });
+};
+
 exports.status = async function (request, response, next) {
   let token = request.body.token;
 
-  const statusResponse = await WebpayPlus.Transaction.status(token).catch(next);
+  const statusResponse = await WebpayPlus.DeferredTransaction.status(
+    token
+  ).catch(next);
 
   let viewData = {
     token,
     statusResponse,
   };
 
-  response.render("webpay_plus/status", {
-    step: "Estado de Transacción",
+  response.render("webpay_plus_deferred/status", {
+    step: "Estado de Transacción diferida",
     stepDescription:
       "Puedes solicitar el estado de una transacción hasta 7 días despues de que haya sido" +
       " realizada. No hay limite de solicitudes de este tipo, sin embargo, una vez pasados los " +
@@ -77,7 +114,7 @@ exports.status = async function (request, response, next) {
 exports.refund = async function (request, response, next) {
   let { token, amount } = request.body;
 
-  const refundResponse = await WebpayPlus.Transaction.refund(
+  const refundResponse = await WebpayPlus.DeferredTransaction.refund(
     token,
     amount
   ).catch(next);
@@ -88,8 +125,8 @@ exports.refund = async function (request, response, next) {
     refundResponse,
   };
 
-  response.render("webpay_plus/refund", {
-    step: "Reembolso de Transacción",
+  response.render("webpay_plus_deferred/refund", {
+    step: "Reembolso de Transacción diferida",
     stepDescription:
       "Podrás pedir el reembolso del dinero al tarjeta habiente, dependiendo del monto " +
       "y el tiempo transacurrido será una Reversa, Anulación o Anulación parcial.",

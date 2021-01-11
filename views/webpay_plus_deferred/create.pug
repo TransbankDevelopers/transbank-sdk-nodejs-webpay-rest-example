@@ -13,7 +13,7 @@ block step
           | import { WebpayPlus } from 'transbank-sdk'; // ES6
           |
           | // Es necesario ejecutar dentro de una función async para utilizar await
-          | const createResponse = await WebpayPlus.Transaction.create(
+          | const createResponse = await WebpayPlus.DeferredTransaction.create(
           |   buyOrder, 
           |   sessionId, 
           |   amount, 
@@ -75,9 +75,7 @@ block step
             td #{viewData.returnUrl}
     .col.m6
       h5 Por último
-      p
-        | Con la respuesta del servicio creamos el formulario, para efectos del ejemplo 
-        | haremos el campo <code>token_ws</code> visible
+      p Con la respuesta del servicio creamos el formulario, para efectos del ejemplo haremos el campo <code>token_ws</code> visible
       .card-panel
         form(action=viewData.url, method="POST", id="createForm")
           p Formulario de redirección
