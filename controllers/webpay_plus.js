@@ -60,15 +60,39 @@ exports.status = async function (request, response, next) {
   const statusResponse = await WebpayPlus.Transaction.status(token).catch(next);
 
   let viewData = {
+    token,
     statusResponse,
   };
 
   response.render("webpay_plus/status", {
     step: "Estado de Transacción",
     stepDescription:
-      "Podemos solicitar el estado de una transacción hasta 7 días despues de que haya sido" +
-      " realizada. No tiene limite de solicitudes, sin embargo, una vez pasados los 7 días ya no" +
-      " podrás revisar su estado.",
+      "Puedes solicitar el estado de una transacción hasta 7 días despues de que haya sido" +
+      " realizada. No hay limite de solicitudes de este tipo, sin embargo, una vez pasados los " +
+      "7 días ya no podrás revisar su estado.",
+    viewData,
+  });
+};
+
+exports.refund = async function (request, response, next) {
+  let { token, amount } = request.body;
+
+  const refundResponse = await WebpayPlus.Transaction.refund(
+    token,
+    amount
+  ).catch(next);
+
+  let viewData = {
+    token,
+    amount,
+    refundResponse,
+  };
+
+  response.render("webpay_plus/refund", {
+    step: "Reembolso de la Transacción",
+    stepDescription:
+      "Podrás pedir el reembolso del dinero al tarjeta habiente, dependiendo del monto " +
+      "y el tiempo transacurrido será una Reversa, Anulación o Anulación parcial.",
     viewData,
   });
 };

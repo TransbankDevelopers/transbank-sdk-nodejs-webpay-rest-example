@@ -14,4 +14,6 @@ router.post("/commit", webpay_plus_controller.commit);
 
 router.post("/status", webpay_plus_controller.status);
 
+router.post("/refund", webpay_plus_controller.refund);
+
 module.exports = router;
