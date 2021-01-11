@@ -17,7 +17,7 @@ block step
         code.js
           | //En el caso de Express
           | let token = request.body.token_ws;
-          | let commitResponse = await WebpayPlus.Transaction.commit(token).catch(next);
+          | const commitResponse = await WebpayPlus.Transaction.commit(token).catch(next);
     .col.m4
       h5 Petición
       p 
@@ -28,15 +28,18 @@ block step
       h5 Respuesta
       p 
         | Transbank contestará con lo siguiente.
-        | Debes guardar esta información, el <strong>único</strong> dato que debes validar es 
+        | Debes guardar esta información, lo <strong>único</strong> que debes validar es 
         | que <code>response_code</code> sea igual a cero.
     .col.m8
       pre.z-depth-2
         code.json= JSON.stringify(viewData.commitResponse, null, ' ')
+
   .row
     .col.m12
       h4 Listo !
       p Ya puedes mostrar al usuario una página de éxito de la transacción.
+
+block actions
   .row
     .col.m12
       h5 Otras utilidades
@@ -45,12 +48,11 @@ block step
         | pago dependiendo de ciertas condiciones comerciales. También puedes consultar el estado
         | de la transacción hasta 7 días después de realizada.
   .row
-    .col.m4
-      a.btn.waves-effect.waves-light.pink(href="/webpay_plus/status") Consultar estado
-    .col.m4
+    .col.m6
+      form(action="/webpay_plus/status", method="post")
+        input(type="hidden" value=viewData.token, name="token")
+        button(type="submit").btn.waves-effect.waves-light.pink.white-text Consultar Estado
+    .col.m6
       a.btn.waves-effect.waves-light.pink(href="/webpay_plus/refund") Reembolsar
-    .col.m4
-      a.btn.waves-effect.waves-dark.white.black-text(href="/") Volver al inicio
-
 
 
