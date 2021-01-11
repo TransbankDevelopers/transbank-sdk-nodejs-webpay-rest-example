@@ -47,7 +47,7 @@ exports.commit = async function (request, response, next) {
   response.render("webpay_plus/commit", {
     step: "Confirmar Transacción",
     stepDescription:
-      "En este tenemos que confirmar la transacción con el objetivo de avisar a " +
+      "En este paso tenemos que confirmar la transacción con el objetivo de avisar a " +
       "Transbank que hemos recibido la transacción ha sido recibida exitosamente. En caso de que " +
       "no se confirme la transacción, ésta será reversada.",
     viewData,

@@ -12,6 +12,7 @@ block step
           | const WebpayPlus = require('transbank-sdk').WebpayPlus; // ES5
           | import { WebpayPlus } from 'transbank-sdk'; // ES6
           |
+          | // Es necesario ejecutar dentro de una función async para utilizar await
           | let createResponse = await WebpayPlus.Transaction.create(
           |   buyOrder, 
           |   sessionId, 
