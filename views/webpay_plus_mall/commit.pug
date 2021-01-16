@@ -49,12 +49,12 @@ block actions
         | de la transacción hasta 7 días después de realizada.
   .row
     .col.m6
-      form(action="/webpay_plus/status", method="post")
+      form(action="/webpay_plus_mall/status", method="post")
         input(type="hidden" value=viewData.token, name="token")
         button(type="submit").btn.waves-effect.waves-light.pink.white-text Consultar Estado
     .col.m6
-      form(action="/webpay_plus/refund", method="post")
-        button.btn.waves-effect.waves-light.pink.white-text(href="/webpay_plus/refund", type="submit") Reembolsar
+      form(action="/webpay_plus_mall/refund", method="post")
+        button.btn.waves-effect.waves-light.pink.white-text(href="/webpay_plus_mall/refund", type="submit") Reembolsar
         input(type="hidden" value=viewData.token, name="token")
         .input-field(style="margin-top: 25px")
           input(type="number", name="amount", value=viewData.commitResponse.amount)
