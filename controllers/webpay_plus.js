@@ -7,24 +7,30 @@ exports.create = async function (request, response, next) {
   let returnUrl =
     request.protocol + "://" + request.get("host") + "/webpay_plus/commit";
 
+  let token;
+  let url;
+  let viewData;
   const createResponse = await WebpayPlus.Transaction.create(
     buyOrder,
     sessionId,
     amount,
     returnUrl
-  ).catch(next);
+  )
+    .then(() => {
+      token = createResponse.token;
+      url = createResponse.url;
 
-  let token = createResponse.token;
-  let url = createResponse.url;
+      viewData = {
+        buyOrder,
+        sessionId,
+        amount,
+        returnUrl,
+        token,
+        url,
+      };
+    })
+    .catch(next);
 
-  let viewData = {
-    buyOrder,
-    sessionId,
-    amount,
-    returnUrl,
-    token,
-    url,
-  };
   response.render("webpay_plus/create", {
     step: "Crear Transacción",
     stepDescription:
@@ -36,13 +42,16 @@ exports.create = async function (request, response, next) {
 
 exports.commit = async function (request, response, next) {
   let token = request.body.token_ws;
+  let viewData;
 
-  const commitResponse = await WebpayPlus.Transaction.commit(token).catch(next);
-
-  let viewData = {
-    token,
-    commitResponse,
-  };
+  const commitResponse = await WebpayPlus.Transaction.commit(token)
+    .then(() => {
+      viewData = {
+        token,
+        commitResponse,
+      };
+    })
+    .catch(next);
 
   response.render("webpay_plus/commit", {
     step: "Confirmar Transacción",
@@ -56,13 +65,16 @@ exports.commit = async function (request, response, next) {
 
 exports.status = async function (request, response, next) {
   let token = request.body.token;
+  let viewData;
 
-  const statusResponse = await WebpayPlus.Transaction.status(token).catch(next);
-
-  let viewData = {
-    token,
-    statusResponse,
-  };
+  const statusResponse = await WebpayPlus.Transaction.status(token)
+    .then(() => {
+      viewData = {
+        token,
+        statusResponse,
+      };
+    })
+    .catch(next);
 
   response.render("webpay_plus/status", {
     step: "Estado de Transacción",
@@ -76,17 +88,16 @@ exports.status = async function (request, response, next) {
 
 exports.refund = async function (request, response, next) {
   let { token, amount } = request.body;
-
-  const refundResponse = await WebpayPlus.Transaction.refund(
-    token,
-    amount
-  ).catch(next);
-
-  let viewData = {
-    token,
-    amount,
-    refundResponse,
-  };
+  let viewData;
+  const refundResponse = await WebpayPlus.Transaction.refund(token, amount)
+    .then(() => {
+      viewData = {
+        token,
+        amount,
+        refundResponse,
+      };
+    })
+    .catch(next);
 
   response.render("webpay_plus/refund", {
     step: "Reembolso de Transacción",

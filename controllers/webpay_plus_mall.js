@@ -19,24 +19,30 @@ exports.create = async function (request, response, next) {
   let returnUrl =
     request.protocol + "://" + request.get("host") + "/webpay_plus_mall/commit";
 
+  let token;
+  let url;
+  let viewData;
   const createResponse = await WebpayPlus.MallTransaction.create(
     buyOrder,
     sessionId,
     returnUrl,
     details
-  ).catch(next);
+  )
+    .then(() => {
+      token = createResponse.token;
+      url = createResponse.url;
 
-  let token = createResponse.token;
-  let url = createResponse.url;
+      viewData = {
+        buyOrder,
+        sessionId,
+        returnUrl,
+        details,
+        token,
+        url,
+      };
+    })
+    .catch(next);
 
-  let viewData = {
-    buyOrder,
-    sessionId,
-    returnUrl,
-    details,
-    token,
-    url,
-  };
   response.render("webpay_plus_mall/create", {
     step: "Crear Transacción Mall",
     stepDescription:
@@ -48,15 +54,16 @@ exports.create = async function (request, response, next) {
 
 exports.commit = async function (request, response, next) {
   let token = request.body.token_ws;
+  let viewData;
 
-  const commitResponse = await WebpayPlus.MallTransaction.commit(token).catch(
-    next
-  );
-
-  let viewData = {
-    token,
-    commitResponse,
-  };
+  const commitResponse = await WebpayPlus.MallTransaction.commit(token)
+    .then(() => {
+      viewData = {
+        token,
+        commitResponse,
+      };
+    })
+    .catch(next);
 
   response.render("webpay_plus_mall/commit", {
     step: "Confirmar Transacción Mall",
@@ -70,15 +77,16 @@ exports.commit = async function (request, response, next) {
 
 exports.status = async function (request, response, next) {
   let token = request.body.token;
+  let viewData;
 
-  const statusResponse = await WebpayPlus.MallTransaction.status(token).catch(
-    next
-  );
-
-  let viewData = {
-    token,
-    statusResponse,
-  };
+  const statusResponse = await WebpayPlus.MallTransaction.status(token)
+    .then(() => {
+      viewData = {
+        token,
+        statusResponse,
+      };
+    })
+    .catch(next);
 
   response.render("webpay_plus_mall/status", {
     step: "Estado de Transacción Mall",
@@ -92,17 +100,23 @@ exports.status = async function (request, response, next) {
 
 exports.refund = async function (request, response, next) {
   let { token, amount } = request.body;
-
+  let buyOrder = request.body.buy_order;
+  let commerceCode = request.body.commerce_code;
+  let viewData;
   const refundResponse = await WebpayPlus.MallTransaction.refund(
     token,
+    buyOrder,
+    commerceCode,
     amount
-  ).catch(next);
-
-  let viewData = {
-    token,
-    amount,
-    refundResponse,
-  };
+  )
+    .then(() => {
+      viewData = {
+        token,
+        amount,
+        refundResponse,
+      };
+    })
+    .catch(next);
 
   response.render("webpay_plus_mall/refund", {
     step: "Reembolso de Transacción Mall",

@@ -10,24 +10,29 @@ exports.create = async function (request, response, next) {
     request.get("host") +
     "/webpay_plus_deferred/commit";
 
+  let token;
+  let url;
+  let viewData;
   const createResponse = await WebpayPlus.DeferredTransaction.create(
     buyOrder,
     sessionId,
     amount,
     returnUrl
-  ).catch(next);
+  )
+    .then(() => {
+      token = createResponse.token;
+      url = createResponse.url;
+      viewData = {
+        buyOrder,
+        sessionId,
+        amount,
+        returnUrl,
+        token,
+        url,
+      };
+    })
+    .catch(next);
 
-  let token = createResponse.token;
-  let url = createResponse.url;
-
-  let viewData = {
-    buyOrder,
-    sessionId,
-    amount,
-    returnUrl,
-    token,
-    url,
-  };
   response.render("webpay_plus_deferred/create", {
     step: "Crear Transacción diferida",
     stepDescription:
@@ -39,15 +44,16 @@ exports.create = async function (request, response, next) {
 
 exports.commit = async function (request, response, next) {
   let token = request.body.token_ws;
+  let viewData;
 
-  const commitResponse = await WebpayPlus.DeferredTransaction.commit(
-    token
-  ).catch(next);
-
-  let viewData = {
-    token,
-    commitResponse,
-  };
+  const commitResponse = await WebpayPlus.DeferredTransaction.commit(token)
+    .then(() => {
+      viewData = {
+        token,
+        commitResponse,
+      };
+    })
+    .catch(next);
 
   response.render("webpay_plus_deferred/commit", {
     step: "Confirmar Transacción diferida",
@@ -64,21 +70,24 @@ exports.capture = async function (request, response, next) {
   let buyOrder = request.body.buy_order;
   let authorizationCode = request.body.authorization_code;
   let captureAmount = request.body.capture_amount;
+  let viewData;
 
   const captureResponse = await WebpayPlus.DeferredTransaction.capture(
     token,
     buyOrder,
     authorizationCode,
     captureAmount
-  ).catch(next);
-
-  let viewData = {
-    captureResponse,
-    token,
-    buyOrder,
-    authorizationCode,
-    captureAmount,
-  };
+  )
+    .then(() => {
+      viewData = {
+        captureResponse,
+        token,
+        buyOrder,
+        authorizationCode,
+        captureAmount,
+      };
+    })
+    .catch(next);
 
   response.render("webpay_plus_deferred/capture", {
     step: "Capturar Transacción diferida",
@@ -91,15 +100,16 @@ exports.capture = async function (request, response, next) {
 
 exports.status = async function (request, response, next) {
   let token = request.body.token;
+  let viewData;
 
-  const statusResponse = await WebpayPlus.DeferredTransaction.status(
-    token
-  ).catch(next);
-
-  let viewData = {
-    token,
-    statusResponse,
-  };
+  const statusResponse = await WebpayPlus.DeferredTransaction.status(token)
+    .then(() => {
+      viewData = {
+        token,
+        statusResponse,
+      };
+    })
+    .catch(next);
 
   response.render("webpay_plus_deferred/status", {
     step: "Estado de Transacción diferida",
@@ -113,17 +123,20 @@ exports.status = async function (request, response, next) {
 
 exports.refund = async function (request, response, next) {
   let { token, amount } = request.body;
+  let viewData;
 
   const refundResponse = await WebpayPlus.DeferredTransaction.refund(
     token,
     amount
-  ).catch(next);
-
-  let viewData = {
-    token,
-    amount,
-    refundResponse,
-  };
+  )
+    .then(() => {
+      viewData = {
+        token,
+        amount,
+        refundResponse,
+      };
+    })
+    .catch(next);
 
   response.render("webpay_plus_deferred/refund", {
     step: "Reembolso de Transacción diferida",
