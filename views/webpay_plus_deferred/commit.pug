@@ -15,7 +15,7 @@ block step
     .col.m8
       pre.z-depth-2
         code.js
-          | //En el caso de Express
+          | // En el caso de Express
           | let token = request.body.token_ws;
           | const commitResponse = await WebpayPlus.DeferredTransaction.commit(token).catch(next);
     .col.m4

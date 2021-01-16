@@ -1,4 +1,4 @@
-extends template
+extends ../webpay_plus/template
 
 block step
   .row
@@ -17,7 +17,7 @@ block step
         code.js
           | // En el caso de Express
           | let token = request.body.token_ws;
-          | const commitResponse = await WebpayPlus.Transaction.commit(token).catch(next);
+          | const commitResponse = await WebpayPlus.MallTransaction.commit(token).catch(next);
     .col.m4
       h5 Petición
       p 

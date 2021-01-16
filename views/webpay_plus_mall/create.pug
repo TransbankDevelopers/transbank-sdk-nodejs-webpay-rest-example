@@ -1,0 +1,112 @@
+extends ../webpay_plus/template
+
+block step
+  .row
+    .col.m5
+      h5 Petición
+      p Para comenzar debes importar <code>WebpayPlus</code> y luego crear una transacción mall
+
+    .col.m7
+      pre.z-depth-2
+        code.js
+          | const WebpayPlus = require('transbank-sdk').WebpayPlus; // ES5
+          | const TransactionDetail = require("transbank-sdk").TransactionDetail;
+          | 
+          | import { WebpayPlus } from 'transbank-sdk'; // ES6
+          | immport { TransactionDetail } = require("transbank-sdk").TransactionDetail;
+          |
+          | let details = [
+          |   new TransactionDetail(#{viewData.details[0].amount}, "#{viewData.details[0].commerceCode}", "#{viewData.details[0].buyOrder}"),
+          |   new TransactionDetail(#{viewData.details[1].amount}, "#{viewData.details[1].commerceCode}", "#{viewData.details[1].buyOrder}"),
+          | ]
+          | 
+          | // Es necesario ejecutar dentro de una función async para utilizar await
+          | const createResponse = await WebpayPlus.MallTransaction.create(
+          |   buyOrder, 
+          |   sessionId, 
+          |   details, 
+          |   returnUrl
+          | ).catch(next);
+  .row
+    .col.m8
+      pre.z-depth-2
+        code.json
+          | {
+          |  'token': '#{viewData.token}',
+          |  'url': '#{viewData.url}'
+          | }
+    .col.m4
+      h5 Respuesta
+      p Una vez creada la transacción, estos serán los datos de respuesta
+  .row
+    .col.m2
+      h5 Por último
+      p Debes utilizar estos datos para crear un formulario
+    .col.m11
+      pre.z-depth-2
+        code.html
+          | #{'<form action="' + viewData.url + '" method="POST">'}
+          | #{'  <input type="hidden" name="token_ws" value="' + viewData.token + '"/>'}
+          br
+          | #{'   <input type="submit" value="Pagar"/>'}
+          br
+          | #{'</form>'}
+  .row
+    .col.m12
+      h4 Ejemplo
+  .row
+    .col.m6
+      h5 Creamos la transacción
+      p Usando los siguientes datos
+      table
+        thead
+          tr
+            th Campo
+            th Valor
+        tbody
+          tr
+            td
+              strong Orden de compra (buyOrder)
+            td #{viewData.buyOrder}
+
+          tr
+            td
+              strong ID de sesión (sessionid)
+            td #{viewData.sessionId}
+          tr
+            td
+              strong Detalle (details)
+            td
+              |Monto: #{viewData.details[0].amount} <br>
+              | Código de Comercio: #{viewData.details[0].commerceCode} <br>
+              | Orden de Compra: #{viewData.details[0].buyOrder} <br>
+              | <br>
+              |Monto: #{viewData.details[1].amount} <br>
+              | Código de Comercio: #{viewData.details[1].commerceCode} <br>
+              | Orden de Compra: #{viewData.details[1].buyOrder} <br>
+          tr
+            td
+              strong URL de retorno (returnUrl)
+            td #{viewData.returnUrl}
+    .col.m6
+      h5 Por último
+      p
+        | Con la respuesta del servicio creamos el formulario, para efectos del ejemplo 
+        | haremos el campo <code>token_ws</code> visible
+      .card-panel
+        form(action=viewData.url, method="POST", id="createForm")
+          p Formulario de redirección
+          br
+          .input-field
+            input(type="text", name="token_ws", value=viewData.token)
+            label.text-dard.text-lighten-2(for="token_ws") Token
+          .input-field.white-text
+            button.waves-effect.waves-light.btn.pink.white-text(type="submit") Pagar
+
+  .fixed-action-btn
+    a.btn-floating.btn-large.pink(onclick="submitFAB();")
+      i.large.material-icons navigate_next
+  script.
+    function submitFAB(){
+      document.getElementById('createForm').submit();
+    }

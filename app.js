@@ -7,6 +7,7 @@ var logger = require("morgan");
 var indexRouter = require("./routes/index");
 var webpayPlusRouter = require("./routes/webpay_plus");
 var webpayPlusDeferredRouter = require("./routes/webpay_plus_deferred");
+var webpayPlusMallRouter = require("./routes/webpay_plus_mall");
 
 var app = express();
 
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/webpay_plus", webpayPlusRouter);
 app.use("/webpay_plus_deferred", webpayPlusDeferredRouter);
+app.use("/webpay_plus_mall", webpayPlusMallRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
