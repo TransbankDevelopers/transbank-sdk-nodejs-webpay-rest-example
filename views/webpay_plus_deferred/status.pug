@@ -12,7 +12,7 @@ block step
         code.z-depth-2.js
           | // Token: #{viewData.token}
           |
-          | const statusResponse = await WebpayPlus.DeferredTransaction.status(token).catch(next);
+          | const statusResponse = await WebpayPlus.DeferredTransaction.status(token);
   .row
     .col.m8
       pre.z-depth-2

@@ -1,7 +1,8 @@
 const WebpayPlus = require("transbank-sdk").WebpayPlus;
 const TransactionDetail = require("transbank-sdk").TransactionDetail;
+const asyncHandler = require("../utils/async_handler");
 
-exports.create = async function (request, response, next) {
+exports.create = asyncHandler(async function (request, response, next) {
   let buyOrder = "O-" + Math.floor(Math.random() * 10000) + 1;
   let sessionId = "S-" + Math.floor(Math.random() * 10000) + 1;
   let details = [
@@ -24,7 +25,7 @@ exports.create = async function (request, response, next) {
     sessionId,
     returnUrl,
     details
-  ).catch(next);
+  );
 
   let token = createResponse.token;
   let url = createResponse.url;
@@ -44,14 +45,12 @@ exports.create = async function (request, response, next) {
       "poder en el siguiente paso redirigir al Tarjetahabiente hacia el formulario de pago",
     viewData,
   });
-};
+});
 
-exports.commit = async function (request, response, next) {
+exports.commit = asyncHandler(async function (request, response, next) {
   let token = request.body.token_ws;
 
-  const commitResponse = await WebpayPlus.MallTransaction.commit(token).catch(
-    next
-  );
+  const commitResponse = await WebpayPlus.MallTransaction.commit(token);
 
   let viewData = {
     token,
@@ -66,14 +65,12 @@ exports.commit = async function (request, response, next) {
       "no se confirme la transacción, ésta será reversada.",
     viewData,
   });
-};
+});
 
-exports.status = async function (request, response, next) {
+exports.status = asyncHandler(async function (request, response, next) {
   let token = request.body.token;
 
-  const statusResponse = await WebpayPlus.MallTransaction.status(token).catch(
-    next
-  );
+  const statusResponse = await WebpayPlus.MallTransaction.status(token);
 
   let viewData = {
     token,
@@ -88,15 +85,19 @@ exports.status = async function (request, response, next) {
       "7 días ya no podrás revisar su estado.",
     viewData,
   });
-};
+});
 
-exports.refund = async function (request, response, next) {
+exports.refund = asyncHandler(async function (request, response, next) {
   let { token, amount } = request.body;
+  let buyOrder = request.body.buy_order;
+  let commerceCode = request.body.commerce_code;
 
   const refundResponse = await WebpayPlus.MallTransaction.refund(
     token,
+    buyOrder,
+    commerceCode,
     amount
-  ).catch(next);
+  );
 
   let viewData = {
     token,
@@ -111,4 +112,4 @@ exports.refund = async function (request, response, next) {
       "y el tiempo transacurrido será una Reversa, Anulación o Anulación parcial.",
     viewData,
   });
-};
+});

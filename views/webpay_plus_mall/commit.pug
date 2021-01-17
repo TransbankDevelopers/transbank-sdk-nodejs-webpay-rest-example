@@ -17,7 +17,7 @@ block step
         code.js
           | // En el caso de Express
           | let token = request.body.token_ws;
-          | const commitResponse = await WebpayPlus.MallTransaction.commit(token).catch(next);
+          | const commitResponse = await WebpayPlus.MallTransaction.commit(token);
     .col.m4
       h5 Petición
       p 
@@ -54,10 +54,16 @@ block actions
         button(type="submit").btn.waves-effect.waves-light.pink.white-text Consultar Estado
     .col.m6
       form(action="/webpay_plus_mall/refund", method="post")
-        button.btn.waves-effect.waves-light.pink.white-text(href="/webpay_plus_mall/refund", type="submit") Reembolsar
+        button.btn.waves-effect.waves-light.pink.white-text(type="submit") Reembolsar
         input(type="hidden" value=viewData.token, name="token")
         .input-field(style="margin-top: 25px")
-          input(type="number", name="amount", value=viewData.commitResponse.amount)
+          input(type="text", name="buy_order", value=viewData.commitResponse.details[0].buy_order)
+          label(for="buy_order") Orden de compra:
+        .input-field(style="margin-top: 25px")
+          input(type="text", name="commerce_code", value=viewData.commitResponse.details[0].commerce_code)
+          label(for="commerce_code") Código de Comercio:
+        .input-field(style="margin-top: 25px")
+          input(type="number", name="amount", value=viewData.commitResponse.details[0].amount)
           label(for="amount") Monto a reembolsar:
 
 
