@@ -58,7 +58,7 @@ exports.commit = asyncHandler(async function (request, response, next) {
   });
 });
 
-exports.capture = async function (request, response, next) {
+exports.capture = asyncHandler(async function (request, response, next) {
   let token = request.body.token;
   let buyOrder = request.body.buy_order;
   let authorizationCode = request.body.authorization_code;
@@ -86,9 +86,9 @@ exports.capture = async function (request, response, next) {
       "dinero que habia sido previamente reservado al hacer la transacción",
     viewData,
   });
-};
+});
 
-exports.status = async function (request, response, next) {
+exports.status = asyncHandler(async function (request, response, next) {
   let token = request.body.token;
 
   const statusResponse = await WebpayPlus.DeferredTransaction.status(token);
@@ -106,9 +106,9 @@ exports.status = async function (request, response, next) {
       "7 días ya no podrás revisar su estado.",
     viewData,
   });
-};
+});
 
-exports.refund = async function (request, response, next) {
+exports.refund = asyncHandler(async function (request, response, next) {
   let { token, amount } = request.body;
 
   const refundResponse = await WebpayPlus.DeferredTransaction.refund(
@@ -129,4 +129,4 @@ exports.refund = async function (request, response, next) {
       "y el tiempo transacurrido será una Reversa, Anulación o Anulación parcial.",
     viewData,
   });
-};
+});
