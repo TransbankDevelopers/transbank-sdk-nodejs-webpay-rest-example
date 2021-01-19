@@ -1,0 +1,69 @@
+extends ../webpay_plus/template
+
+block step
+  .row
+    .col.m4
+      h5 Datos recibidos
+      p Luego de que se termina el flujo en el formulario de pago recibiras un POST con lo siguiente
+    .col.m8
+      pre.z-depth-2
+        code.json
+          | {
+          |   'token_ws': '#{viewData.token}'
+          | }
+  .row
+    .col.m8
+      pre.z-depth-2
+        code.js
+          | // En el caso de Express
+          | let token = request.body.token_ws;
+          | const commitResponse = await WebpayPlus.MallDeferredTransaction.commit(token);
+    .col.m4
+      h5 Petición
+      p 
+        | Usaras el token recibido para confirmar la transacción usando 
+        | nuevamente <code>WebpayPlus</code>
+  .row
+    .col.m4
+      h5 Respuesta
+      p 
+        | Transbank contestará con lo siguiente.
+        | Debes guardar esta información, lo <strong>único</strong> que debes validar es 
+        | que <code>response_code</code> sea igual a cero.
+    .col.m8
+      pre.z-depth-2
+        code.json= JSON.stringify(viewData.commitResponse, null, ' ')
+
+  .row
+    .col.m12
+      h4 Listo !
+      p Ya puedes mostrar al usuario una página de éxito de la transacción.
+
+block actions
+  .row
+    .col.m12
+      h4 Casi listo !
+      p 
+        | Ya puedes mostrar al usuario una página de éxito de la transacción.
+        | Debes tener en cuenta que la transacción aun no ha sido capturada solo ha 
+        | sido retenido el saldo en la tarjeta del Tarjetahabiente
+  .row
+    form(action="/webpay_plus_mall_deferred/capture", method="post", id="captureForm").valign-wrapper
+      .col.m4
+        button(type="submit").waves-effect.waves-light.btn.pink.white-text.valign Capturar
+      .col.m8
+        input(type="hidden", name="token", value=viewData.token)
+        input(type="hidden", name="commerce_code", value=viewData.commitResponse.details[0].commerce_code)
+        input(type="hidden", name="buy_order", value=viewData.commitResponse.details[0].buy_order)
+        input(type="hidden", name="authorization_code", value=viewData.commitResponse.details[0].authorization_code)
+        .input-field
+          input(type="text", name="capture_amount", value=viewData.commitResponse.details[0].amount)
+          label(for="capture_amount") Monto a capturar
+  
+  .fixed-action-btn
+    a.btn-floating.btn-large.pink(onclick="submitFAB();")
+      i.large.material-icons navigate_next
+  script.
+    function submitFAB(){
+      document.getElementById('captureForm').submit();
+    }
