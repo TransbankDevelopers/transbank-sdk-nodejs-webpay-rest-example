@@ -17,7 +17,7 @@ block step
         code.js
           | // En el caso de Express
           | let token = request.body.token_ws;
-          | const commitResponse = await WebpayPlus.DeferredTransaction.commit(token);
+          | const commitResponse = await WebpayPlus.MallDeferredTransaction.commit(token);
     .col.m4
       h5 Petición
       p 
@@ -36,21 +36,28 @@ block step
 
   .row
     .col.m12
+      h4 Listo !
+      p Ya puedes mostrar al usuario una página de éxito de la transacción.
+
+block actions
+  .row
+    .col.m12
       h4 Casi listo !
       p 
         | Ya puedes mostrar al usuario una página de éxito de la transacción.
         | Debes tener en cuenta que la transacción aun no ha sido capturada solo ha 
         | sido retenido el saldo en la tarjeta del Tarjetahabiente
   .row
-    form(action="/webpay_plus_deferred/capture", method="post", id="captureForm").valign-wrapper
+    form(action="/webpay_plus_mall_deferred/capture", method="post", id="captureForm").valign-wrapper
       .col.m4
         button(type="submit").waves-effect.waves-light.btn.pink.white-text.valign Capturar
       .col.m8
         input(type="hidden", name="token", value=viewData.token)
-        input(type="hidden", name="buy_order", value=viewData.commitResponse.buy_order)
-        input(type="hidden", name="authorization_code", value=viewData.commitResponse.authorization_code)
+        input(type="hidden", name="commerce_code", value=viewData.commitResponse.details[0].commerce_code)
+        input(type="hidden", name="buy_order", value=viewData.commitResponse.details[0].buy_order)
+        input(type="hidden", name="authorization_code", value=viewData.commitResponse.details[0].authorization_code)
         .input-field
-          input(type="text", name="capture_amount", value=viewData.commitResponse.amount)
+          input(type="text", name="capture_amount", value=viewData.commitResponse.details[0].amount)
           label(for="capture_amount") Monto a capturar
   
   .fixed-action-btn
@@ -60,7 +67,3 @@ block step
     function submitFAB(){
       document.getElementById('captureForm').submit();
     }
-
-
-
-

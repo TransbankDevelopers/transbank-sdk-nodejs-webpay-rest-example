@@ -4,19 +4,27 @@ block step
   .row
     .col.m5
       h5 Petición
-      p Para comenzar debes importar <code>WebpayPlus</code> y luego crear una transacción
+      p Para comenzar debes importar <code>WebpayPlus</code> y luego crear una transacción mall
 
     .col.m7
       pre.z-depth-2
         code.js
           | const WebpayPlus = require('transbank-sdk').WebpayPlus; // ES5
+          | const TransactionDetail = require("transbank-sdk").TransactionDetail;
+          | 
           | import { WebpayPlus } from 'transbank-sdk'; // ES6
+          | immport { TransactionDetail } = require("transbank-sdk").TransactionDetail;
           |
+          | let details = [
+          |   new TransactionDetail(#{viewData.details[0].amount}, "#{viewData.details[0].commerceCode}", "#{viewData.details[0].buyOrder}"),
+          |   new TransactionDetail(#{viewData.details[1].amount}, "#{viewData.details[1].commerceCode}", "#{viewData.details[1].buyOrder}"),
+          | ]
+          | 
           | // Es necesario ejecutar dentro de una función async para utilizar await
-          | const createResponse = await WebpayPlus.Transaction.create(
+          | const createResponse = await WebpayPlus.MallDeferredTransaction.create(
           |   buyOrder, 
           |   sessionId, 
-          |   amount, 
+          |   details, 
           |   returnUrl
           | );
   .row
@@ -34,7 +42,7 @@ block step
     .col.m2
       h5 Por último
       p Debes utilizar estos datos para crear un formulario
-    .col.m10
+    .col.m11
       pre.z-depth-2
         code.html
           | #{'<form action="' + viewData.url + '" method="POST">'}
@@ -67,15 +75,24 @@ block step
             td #{viewData.sessionId}
           tr
             td
-              strong Monto (amount)
-            td #{viewData.amount}
+              strong Detalle (details)
+            td
+              |Monto: #{viewData.details[0].amount} <br>
+              | Código de Comercio: #{viewData.details[0].commerceCode} <br>
+              | Orden de Compra: #{viewData.details[0].buyOrder} <br>
+              | <br>
+              |Monto: #{viewData.details[1].amount} <br>
+              | Código de Comercio: #{viewData.details[1].commerceCode} <br>
+              | Orden de Compra: #{viewData.details[1].buyOrder} <br>
           tr
             td
               strong URL de retorno (returnUrl)
             td #{viewData.returnUrl}
     .col.m6
       h5 Por último
-      p Con la respuesta del servicio creamos el formulario, para efectos del ejemplo haremos el campo <code>token_ws</code> visible
+      p
+        | Con la respuesta del servicio creamos el formulario, para efectos del ejemplo 
+        | haremos el campo <code>token_ws</code> visible
       .card-panel
         form(action=viewData.url, method="POST", id="createForm")
           p Formulario de redirección

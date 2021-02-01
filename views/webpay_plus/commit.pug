@@ -17,7 +17,7 @@ block step
         code.js
           | // En el caso de Express
           | let token = request.body.token_ws;
-          | const commitResponse = await WebpayPlus.Transaction.commit(token).catch(next);
+          | const commitResponse = await WebpayPlus.Transaction.commit(token);
     .col.m4
       h5 Petición
       p 

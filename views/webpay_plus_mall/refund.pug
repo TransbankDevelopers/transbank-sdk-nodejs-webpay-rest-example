@@ -5,7 +5,9 @@ block step
     .col.m4
       h5 Petición
       p
-        | Necesitas el token de la transacción y el monto que quieres reversar, si anulas el 
+        | Necesitas el token de la transacción, el monto que quieres reversar, el código de 
+        | comercio de la tienda hijo y el orden de compra del detalle de la transacción, 
+        | si anulas el 
         | monto total puede ser una Reversa o Anulación dependiendo de ciertas condiciones
         | o una Anulación parcial si el monto es menor al total. <br>
         | No es posible hacer ni Anulaciones ni Anulaciones parciales en tarjetas que 
@@ -17,7 +19,12 @@ block step
           | // Token: #{viewData.token}
           | // Amount: #{viewData.amount}
           | 
-          | const refundRequest = await WebpayPlus.DeferredTransaction.refund(token, amount);
+          | const refundRequest = await WebpayPlus.MallTransaction.refund(
+          |   token,
+          |   buyOrder,
+          |   commerceCode,
+          |  amount
+          | );
 
   .row
     .col.m8

@@ -1,4 +1,4 @@
-extends template
+extends ../webpay_plus/template
 
 block step
   .row
@@ -12,7 +12,7 @@ block step
         code.z-depth-2.js
           | // Token: #{viewData.token}
           |
-          | const statusResponse = await WebpayPlus.Transaction.status(token);
+          | const statusResponse = await WebpayPlus.MallTransaction.status(token);
   .row
     .col.m8
       pre.z-depth-2

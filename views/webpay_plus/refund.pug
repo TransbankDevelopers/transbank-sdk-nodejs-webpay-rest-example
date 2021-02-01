@@ -17,7 +17,7 @@ block step
           | // Token: #{viewData.token}
           | // Amount: #{viewData.amount}
           | 
-          | const refundRequest = await WebpayPlus.Transaction.refund(token, amount).catch(next);
+          | const refundRequest = await WebpayPlus.Transaction.refund(token, amount);
 
   .row
     .col.m8
