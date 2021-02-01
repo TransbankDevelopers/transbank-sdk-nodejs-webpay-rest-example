@@ -4,7 +4,14 @@ var webpayPlusController = require("../controllers/webpay_plus");
 const WebpayPlus = require("transbank-sdk").WebpayPlus;
 
 router.use(function (req, res, next) {
-  WebpayPlus.configureWebpayPlusForTesting();
+  if (process.env.WPP_CC && process.env.WPP_KEY) {
+    WebpayPlus.configureWebpayPlusForProduction(
+      process.env.WPP_CC,
+      process.env.WPP_KEY
+    );
+  } else {
+    WebpayPlus.configureWebpayPlusForTesting();
+  }
   next();
 });
 

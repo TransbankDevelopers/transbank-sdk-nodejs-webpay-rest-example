@@ -4,7 +4,14 @@ var webpayPlusMallDeferredController = require("../controllers/webpay_plus_mall_
 const WebpayPlus = require("transbank-sdk").WebpayPlus;
 
 router.use(function (req, res, next) {
-  WebpayPlus.configureWebpayPlusMallDeferredForTesting();
+  if (process.env.WPPMD_CC && process.env.WPPMD_KEY) {
+    WebpayPlus.configureWebpayPlusForProduction(
+      process.env.WPPMD_CC,
+      process.env.WPPMD_KEY
+    );
+  } else {
+    WebpayPlus.configureWebpayPlusMallDeferredForTesting();
+  }
   next();
 });
 
