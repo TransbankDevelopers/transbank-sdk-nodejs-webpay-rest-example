@@ -2,7 +2,7 @@
 
 ## Instalación
 
-Ejecutar `npm install``
+Ejecutar `npm install`
 
 ## Ejecución
 
