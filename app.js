@@ -11,6 +11,9 @@ var webpayPlusMallRouter = require("./routes/webpay_plus_mall");
 var webpayPlusMallDeferredRouter = require("./routes/webpay_plus_mall_deferred");
 
 var app = express();
+if (app.settings.env == "development") {
+  require("dotenv").config();
+}
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));

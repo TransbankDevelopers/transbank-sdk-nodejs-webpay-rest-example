@@ -17,7 +17,6 @@ block step
           |
           | let details = [
           |   new TransactionDetail(#{viewData.details[0].amount}, "#{viewData.details[0].commerceCode}", "#{viewData.details[0].buyOrder}"),
-          |   new TransactionDetail(#{viewData.details[1].amount}, "#{viewData.details[1].commerceCode}", "#{viewData.details[1].buyOrder}"),
           | ]
           | 
           | // Es necesario ejecutar dentro de una función async para utilizar await
@@ -80,10 +79,6 @@ block step
               |Monto: #{viewData.details[0].amount} <br>
               | Código de Comercio: #{viewData.details[0].commerceCode} <br>
               | Orden de Compra: #{viewData.details[0].buyOrder} <br>
-              | <br>
-              |Monto: #{viewData.details[1].amount} <br>
-              | Código de Comercio: #{viewData.details[1].commerceCode} <br>
-              | Orden de Compra: #{viewData.details[1].buyOrder} <br>
           tr
             td
               strong URL de retorno (returnUrl)

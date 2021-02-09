@@ -5,15 +5,16 @@ const asyncHandler = require("../utils/async_handler");
 exports.create = asyncHandler(async function (request, response, next) {
   let buyOrder = "O-" + Math.floor(Math.random() * 10000) + 1;
   let sessionId = "S-" + Math.floor(Math.random() * 10000) + 1;
+  let childCommerceCode;
+  if (process.env.WPPMD_CC && process.env.WPPMD_KEY) {
+    childCommerceCode = process.env.WPPMD_C_CC;
+  } else {
+    childCommerceCode = "597055555582";
+  }
   let details = [
     new TransactionDetail(
       Math.floor(Math.random() * 1000) + 1001,
-      "597055555582",
-      "O-" + Math.floor(Math.random() * 10000) + 1
-    ),
-    new TransactionDetail(
-      Math.floor(Math.random() * 1000) + 1001,
-      "597055555583",
+      childCommerceCode,
       "O-" + Math.floor(Math.random() * 10000) + 1
     ),
   ];
