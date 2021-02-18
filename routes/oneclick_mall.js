@@ -15,5 +15,7 @@ router.use(function (req, res, next) {
 router.get("/start", oneclickController.start);
 router.post("/finish", oneclickController.finish);
 router.post("/authorize", oneclickController.authorize);
+router.post("/status", oneclickController.status);
+router.post("/refund", oneclickController.refund);
 
 module.exports = router;

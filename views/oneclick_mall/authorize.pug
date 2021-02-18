@@ -45,12 +45,20 @@ block actions
   .row
     .col.m6
       form(action="/oneclick_mall/status", method="post")
-        input(type="hidden" value=viewData.token, name="token")
+        input(type="hidden" value=viewData.buyOrder, name="buy_order")
         button(type="submit").btn.waves-effect.waves-light.pink.white-text Consultar Estado
     .col.m6
       form(action="/oneclick_mall/refund", method="post")
-        button.btn.waves-effect.waves-light.pink.white-text(href="/oneclick_mall/refund", type="submit") Reembolsar
-        input(type="hidden" value=viewData.token, name="token")
+        button.btn.waves-effect.waves-light.pink.white-text(type="submit") Reembolsar
+        .input-field(style="margin-top: 25px")
+          input(type="text", name="buy_order", value=viewData.buyOrder)
+          label(for="buy_order") Orden de compra:
+        .input-field(style="margin-top: 25px")
+          input(type="text", name="child_buy_order", value=viewData.authorizeResponse.details[0].buy_order)
+          label(for="buy_order") Orden de compra tienda hija:
+        .input-field(style="margin-top: 25px")
+          input(type="text", name="commerce_code", value=viewData.authorizeResponse.details[0].commerce_code)
+          label(for="commerce_code") Código de Comercio:
         .input-field(style="margin-top: 25px")
           input(type="number", name="amount", value=viewData.authorizeResponse.details[0].amount)
           label(for="amount") Monto a reembolsar:

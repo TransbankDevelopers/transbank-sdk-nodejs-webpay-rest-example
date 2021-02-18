@@ -23,7 +23,7 @@ exports.start = asyncHandler(async (request, response, next) => {
   };
 
   response.render("oneclick_mall/start", {
-    step: "Comenzar Inscripción",
+    step: "Comenzar inscripción",
     stepDescription:
       "En este paso comenzaremos la inscripción para poder en el siguiente paso " +
       "redirigir al Tarjetahabiente hacia el formulario de inscripción de Oneclick",
@@ -42,7 +42,7 @@ exports.finish = asyncHandler(async (request, response, next) => {
   };
 
   response.render("oneclick_mall/finish", {
-    step: "Finalizar Inscripción",
+    step: "Finalizar inscripción",
     stepDescription:
       "En este paso terminaremos la inscripción, para luego poder hacer cargos " +
       "cargos a la tarjeta que el tarjetahabiente inscriba.",
@@ -82,9 +82,55 @@ exports.authorize = asyncHandler(async (request, response, next) => {
   };
 
   response.render("oneclick_mall/authorize", {
-    step: "Autorizar Transacción",
+    step: "Autorizar transacción",
     stepDescription:
       "En este paso autorizaremos una transacción en la tarjeta inscrita.",
+    viewData,
+  });
+});
+
+exports.status = asyncHandler(async (request, response, next) => {
+  const buyOrder = request.body.buy_order;
+
+  const statusResponse = await Oneclick.MallTransaction.status(buyOrder);
+
+  let viewData = {
+    buyOrder,
+    statusResponse,
+  };
+
+  response.render("oneclick_mall/status", {
+    step: "Estado de transacción",
+    stepDescription:
+      "Con esta operación podemos solicitar el estado de una transacción",
+    viewData,
+  });
+});
+
+exports.refund = asyncHandler(async (request, response, next) => {
+  const buyOrder = request.body.buy_order;
+  const childCommerceCode = "597055555542";
+  const childBuyOrder = request.body.child_buy_order;
+  const amount = request.body.amount;
+
+  const refundResponse = await Oneclick.MallTransaction.refund(
+    buyOrder,
+    childCommerceCode,
+    childBuyOrder,
+    amount
+  );
+
+  let viewData = {
+    refundResponse,
+    buyOrder,
+    amount,
+  };
+
+  response.render("oneclick_mall/refund", {
+    step: "Reembolso de transacción",
+    stepDescription:
+      "Podrás pedir el reembolso del dinero al tarjeta habiente, dependiendo del monto " +
+      "y el tiempo transacurrido será una Reversa, Anulación o Anulación parcial.",
     viewData,
   });
 });
