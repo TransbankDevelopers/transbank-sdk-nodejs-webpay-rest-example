@@ -5,7 +5,6 @@ block step
     .col.m5
       h5 Petición
       p Para comenzar debes importar <code>Oneclick</code> y luego comenzar una inscripción
-
     .col.m7
       pre.z-depth-2
         code.js
@@ -13,7 +12,7 @@ block step
           | import { Oneclick } from 'transbank-sdk'; // ES6 Modules
           |
           | // Es necesario ejecutar dentro de una función async para utilizar await
-          | const startResponse = await Oneclick.MallInscription.start(
+          | const startResponse = await Oneclick.MallDeferredInscription.start(
           |   buyOrder, 
           |   sessionId, 
           |   amount, 
@@ -32,7 +31,7 @@ block step
       p Debes utilizar estos datos para crear un formulario
     .col.m10
       pre.z-depth-2
-        code.html 
+        code.html
           | #{'<form action="' + viewData.startResponse.token + '" method="POST">'}
           | #{'  <input type="hidden" name="token_ws" value="' + viewData.startResponse.url_webpay + '"/>'}
           br

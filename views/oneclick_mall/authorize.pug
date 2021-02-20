@@ -16,7 +16,7 @@ block step
           | const details = [new TransactionDetail(amount, childCommerceCode, childBuyOrder)];
           |
           | // Es necesario ejecutar dentro de una función async para utilizar await
-          | const authorizeResponse = await Oneclick.MallTransaction.start(
+          | const authorizeResponse = await Oneclick.MallTransaction.authorize(
           |   username, 
           |   tbkUser, 
           |   details
