@@ -1,0 +1,67 @@
+extends template
+
+block step
+  .row
+    .col.m4
+      h5 Petición
+      p
+        | Una vez que ya tenemos el <code>username</code> y el <code>tbk_user</code> podemos autorizar
+        | transacciones en la tarjeta inscrita.
+    .col.m8
+      pre.z-depth-2
+        code.json
+          | const Oneclick = require('transbank-sdk').Oneclick; // CommonJS
+          | import { Oneclick } from 'transbank-sdk'; // ES6 Modules
+          |
+          | const details = [new TransactionDetail(amount, childCommerceCode, childBuyOrder)];
+          |
+          | // Es necesario ejecutar dentro de una función async para utilizar await
+          | const authorizeResponse = await Oneclick.MallDeferredTransaction.authorize(
+          |   username, 
+          |   tbkUser, 
+          |   details
+          | );
+  .row
+    .col.m8
+      pre.z-depth-2
+        code.json= JSON.stringify(viewData.authorizeResponse, null, ' ')
+    .col.m4
+      h5 Respuesta
+      p Una vez autorizada la transacción, estos serán los datos de respuesta
+
+  .row
+    .col.m12
+      h4 Listo !
+      p Ya puedes mostrar al usuario una página de éxito de la transacción.
+
+block actions
+  .row
+    .col.m12
+      h4 Casi listo !
+      p 
+        | Ya puedes mostrar al usuario una página de éxito de la transacción.
+        | Debes tener en cuenta que la transacción aun no ha sido capturada solo ha 
+        | sido retenido el saldo en la tarjeta del Tarjetahabiente
+  .row
+    form(action="/oneclick_mall_deferred/capture", method="post", id="captureForm").valign-wrapper
+      .col.m4
+        button(type="submit").waves-effect.waves-light.btn.pink.white-text.valign Capturar
+      .col.m8
+        input(type="hidden", name="buy_order", value=viewData.authorizeResponse.buy_order)
+        input(type="hidden", name="child_buy_order", value=viewData.authorizeResponse.details[0].buy_order)
+        input(type="hidden", name="authorization_code", value=viewData.authorizeResponse.details[0].authorization_code)
+        input(type="hidden", name="commerce_code", value=viewData.authorizeResponse.details[0].commerce_code)
+        .input-field
+          input(type="text", name="capture_amount", value=viewData.authorizeResponse.details[0].amount)
+          label(for="capture_amount") Monto a capturar
+  
+  .fixed-action-btn
+    a.btn-floating.btn-large.pink(onclick="submitFAB();")
+      i.large.material-icons navigate_next
+  script.
+    function submitFAB(){
+      document.getElementById('captureForm').submit();
+    }
+
+
+

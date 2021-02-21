@@ -1,0 +1,69 @@
+extends template
+
+block step
+  .row
+    .col.m4
+      h5 Datos recibidos
+      p Luego de que se termina el flujo en el formulario de inscripción recibirás un POST con lo siguiente
+    .col.m8
+      pre.z-depth-2
+        code.json
+          | {
+          |   'TBK_TOKEN': '#{viewData.token}'
+          | }
+  .row
+    .col.m8
+      pre.z-depth-2
+        code.js
+          | // En el caso de Express
+          | let token = request.body.TBK_TOKEN;
+          | const commitResponse = await Oneclick.MallInscription.finish(token);
+    .col.m4
+      h5 Petición
+      p 
+        | Usaras el token recibido para autorizar la transacción usando 
+        | nuevamente <code>Oneclick</code>
+  .row
+    .col.m4
+      h5 Respuesta
+      p 
+        | Transbank contestará con lo siguiente.
+        | Debes guardar esta información. Para poder luego autorizar transacciones 
+        | vas a necesitar el <code></code>
+    .col.m8
+      pre.z-depth-2
+        code.json= JSON.stringify(viewData.finishResponse, null, ' ')
+
+block actions
+  .row
+    .col.m12
+      h4 La tarjeta ya está inscrita!
+  .row
+    .col.m12
+      h5 Autorizar una transacción
+      p Para autorizar una transacción debes guardar datos de la respuesta necesarios
+      table
+        thead
+          tr
+            th Campo
+            th Valor
+        tbody
+          tr
+            td
+              strong Nombre de usuario (username)
+            td#username-td 
+
+          tr
+            td
+              strong TBK User (tbk_user)
+            td #{viewData.finishResponse.tbk_user}
+  .row
+    .col.m12
+      form(action="authorize", method="POST", id="authorizeForm")
+        input(type="hidden", name="username", id="username")
+        input(type="hidden", name="tbk_user", value=viewData.finishResponse.tbk_user)
+        button.waves-effect.waves-light.btn.pink.white-text(type="submit") Autorizar un pago
+
+  script.
+    document.getElementById('username').value = window.localStorage.getItem('username');
+    document.getElementById('username-td').innerHTML = window.localStorage.getItem('username');
