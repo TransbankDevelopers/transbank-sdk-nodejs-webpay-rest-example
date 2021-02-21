@@ -11,6 +11,7 @@ var webpayPlusMallRouter = require("./routes/webpay_plus_mall");
 var webpayPlusMallDeferredRouter = require("./routes/webpay_plus_mall_deferred");
 var oneclickMallRouter = require("./routes/oneclick_mall");
 var oneclickMallDeferredRouter = require("./routes/oneclick_mall_deferred");
+var transaccionCompletaRouter = require("./routes/transaccion_completa");
 
 var app = express();
 if (app.settings.env == "development") {
@@ -34,6 +35,7 @@ app.use("/webpay_plus_mall", webpayPlusMallRouter);
 app.use("/webpay_plus_mall_deferred", webpayPlusMallDeferredRouter);
 app.use("/oneclick_mall", oneclickMallRouter);
 app.use("/oneclick_mall_deferred", oneclickMallDeferredRouter);
+app.use("/transaccion_completa", transaccionCompletaRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

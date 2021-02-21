@@ -5,7 +5,7 @@ const WebpayPlus = require("transbank-sdk").WebpayPlus;
 
 router.use(function (req, res, next) {
   if (process.env.WPPMD_CC && process.env.WPPMD_KEY) {
-    WebpayPlus.configureWebpayPlusForProduction(
+    WebpayPlus.configureForProduction(
       process.env.WPPMD_CC,
       process.env.WPPMD_KEY
     );
