@@ -57,13 +57,14 @@ exports.installments = asyncHandler(async function (request, response, next) {
   response.render("transaccion_completa/installments", {
     step: "Consulta de cuotas",
     stepDescription:
-      "En este paso haremos una consulta de cuotas para poder saber sus condiciones.",
+      "En este paso haremos una consulta de cuotas para poder saber sus condiciones. " +
+      "Este paso es opcional, se utiliza solo en el caso de que quieras utilizar cuotas",
     viewData,
   });
 });
 
 exports.commit = asyncHandler(async function (request, response, next) {
-  let token = request.body.token_ws;
+  let token = request.body.token;
   let idQueryInstallments = request.body.id_query_installments;
   let deferredPeriodIndex = request.body.deferred_period_index;
   let gracePeriod = request.body.gracePeriod;
@@ -71,8 +72,8 @@ exports.commit = asyncHandler(async function (request, response, next) {
   const commitResponse = await TransaccionCompleta.Transaction.commit(
     token,
     idQueryInstallments,
-    0,
-    false
+    deferredPeriodIndex,
+    gracePeriod
   );
 
   let viewData = {

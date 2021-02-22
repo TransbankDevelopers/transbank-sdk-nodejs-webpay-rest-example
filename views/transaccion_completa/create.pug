@@ -30,13 +30,22 @@ block step
   .row
     .col.m12
       h4 Lo siguiente ...
-      p Ahora que ya creamos la transacción lo siguiente es hacer la consulta de cuotas.
-      form#installmentsForm(action="/transaccion_completa/installments", method="POST")
+      p 
+        | Ahora que ya creamos la transacción tienes dos opciones, puedes hacer consultas de cuotas para pagar con ellas
+        | o puedes directamente confirmar la transacción
+  .row
+    form.col.m12#confirmForm(action="/transaccion_completa/commit", method="POST")
+      input(type="hidden", name="token", value=viewData.createResponse.token)
+      button.waves-effect.waves-light.btn.pink.white-text(type="submit") Confirmar
+  .row 
+    form#installmentsForm(action="/transaccion_completa/installments", method="POST")
+      .col.m6
+        button.waves-effect.waves-light.btn.pink.white-text(type="submit") Hacer consulta de cuotas
+      .col.m6
         input(type="hidden", name="token", value=viewData.createResponse.token)
         .input-field 
           label(for="installments") Nº de Cuotas
           input(type="number", name="installments", placeholder="3", value="3")
-        button.waves-effect.waves-light.btn.pink.white-text(type="submit") Hacer consulta de cuotas
 
 
   .fixed-action-btn
