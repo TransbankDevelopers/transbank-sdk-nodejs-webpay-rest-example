@@ -1,0 +1,14 @@
+extends ../layout
+block content
+  .row
+    .col.m12.center-align
+      img(src='/images/txcompleta.png', height=100)
+  .row
+    .col.s12.m12
+      h4 #{step}
+      p #{stepDescription}
+  block step
+  block actions
+  .row(style="margin-top: 80px")
+    .col.m4
+      a.btn.waves-effect.waves-dark.white.black-text(href="/") Volver al inicio

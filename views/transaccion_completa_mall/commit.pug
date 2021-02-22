@@ -1,0 +1,72 @@
+extends ../webpay_plus/template
+
+block step
+  .row
+    .col.m4
+      h5 Petición
+      p
+        | Para poder confirmar la transacción debes enviar el token, y en caso de pago en cuotas
+        | debes también enviar el ID de la consulta de couotas. En algunos casos tambien debes enviar 
+        | el Indice del periodo diferido y un boolean indicando si se tomará el período de gracia.
+    .col.m8
+      pre.z-depth-2
+        code.js
+          | const TransaccionCompleta = require('transbank-sdk').TransaccionCompleta; // CommonJS
+          | const CommitDetail = require('transbank-sdk').CommitDetail; // CommonJS
+          | import { TransaccionCompleta, CommitDetail } from 'transbank-sdk'; // ES6 Modules
+          |
+          |  let details = [
+          |    new CommitDetail(
+          |      commerceCode,
+          |      childBuyOrder,
+          |      idQueryInstallments,
+          |      deferredPeriodIndex,
+          |      gracePeriod
+          |    ),
+          |  ];
+          |
+          | const commitResponse = await TransaccionCompleta.MallTransaction.commit(
+          |   token,
+          |   details
+          | );
+          |
+  .row
+    .col.m8
+      pre.z-depth-2
+        code.json= JSON.stringify(viewData.commitResponse, null, ' ')
+    .col.m4
+      h5 Respuesta
+      p Una vez confirmada la transacción recibirás la siguiente información.
+  .row
+    .col.m12
+      h4 Listo !
+      p Ya puedes mostrar al usuario una página de éxito de la transacción.
+
+block actions
+  .row
+    .col.m12
+      h5 Otras utilidades
+      p 
+        | Luego de confirmada la transacción puedes Reembolsar (reversar o anular) el 
+        | pago dependiendo de ciertas condiciones comerciales. También puedes consultar el estado
+        | de la transacción hasta 7 días después de realizada.
+  .row
+    .col.m6
+      form(action="/transaccion_completa_mall/status", method="post")
+        input(type="hidden" value=viewData.token, name="token")
+        button(type="submit").btn.waves-effect.waves-light.pink.white-text Consultar Estado
+    .col.m6
+      form(action="/transaccion_completa_mall/refund", method="post")
+        button.btn.waves-effect.waves-light.pink.white-text(type="submit") Reembolsar
+        input(type="hidden" value=viewData.token, name="token")
+        .input-field(style="margin-top: 25px")
+          input(type="number", name="child_commerce_code", value=viewData.commitResponse.details[0].commerce_code)
+          label(for="amount") Código de comercio:
+        .input-field(style="margin-top: 25px")
+          input(type="text", name="child_buy_order", value=viewData.commitResponse.details[0].buy_order)
+          label(for="amount") Monto a reembolsar:
+        .input-field(style="margin-top: 25px")
+          input(type="number", name="amount", value=viewData.commitResponse.details[0].amount)
+          label(for="amount") Monto a reembolsar:
+
+
