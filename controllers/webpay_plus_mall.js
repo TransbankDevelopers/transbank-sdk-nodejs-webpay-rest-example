@@ -50,22 +50,41 @@ exports.create = asyncHandler(async function (request, response, next) {
 
 exports.commit = asyncHandler(async function (request, response, next) {
   let token = request.body.token_ws;
+  if (token){
+    const commitResponse = await WebpayPlus.MallTransaction.commit(token);
 
-  const commitResponse = await WebpayPlus.MallTransaction.commit(token);
+    let viewData = {
+      token,
+      commitResponse,
+    };
 
-  let viewData = {
-    token,
-    commitResponse,
-  };
+    response.render("webpay_plus_mall/commit", {
+      step: "Confirmar Transacción Mall",
+      stepDescription:
+        "En este paso tenemos que confirmar la transacción con el objetivo de avisar a " +
+        "Transbank que hemos recibido la transacción ha sido recibida exitosamente. En caso de que " +
+        "no se confirme la transacción, ésta será reversada.",
+      viewData,
+    });
+  }
+  else{
+    let tbkToken = request.body.TBK_TOKEN;
+    let tbkOrdenCompra = request.body.TBK_ORDEN_COMPRA;
+    let tbkIdSesion = request.body.TBK_ID_SESION;
 
-  response.render("webpay_plus_mall/commit", {
-    step: "Confirmar Transacción Mall",
-    stepDescription:
-      "En este paso tenemos que confirmar la transacción con el objetivo de avisar a " +
-      "Transbank que hemos recibido la transacción ha sido recibida exitosamente. En caso de que " +
-      "no se confirme la transacción, ésta será reversada.",
-    viewData,
-  });
+    let viewData = {
+      tbkToken,
+      tbkOrdenCompra,
+      tbkIdSesion
+    };
+  
+    response.render("webpay_plus_mall/commit", {
+      step: "Abortar pago => El pago fue anulado por el usuario.",
+      stepDescription:
+        "En este paso luego de abandonar el formulario no es necesario realizar la confirmación ",
+      viewData,
+    });
+  }
 });
 
 exports.status = asyncHandler(async function (request, response, next) {

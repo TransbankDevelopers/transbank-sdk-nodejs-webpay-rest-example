@@ -44,13 +44,24 @@ exports.finish = asyncHandler(async (request, response, next) => {
     finishResponse,
   };
 
-  response.render("oneclick_mall_deferred/finish", {
-    step: "Finalizar inscripción",
-    stepDescription:
-      "En este paso terminaremos la inscripción, para luego poder hacer cargos " +
-      "cargos a la tarjeta que el tarjetahabiente inscriba.",
-    viewData,
-  });
+  if (finishResponse.response_code === -96){
+    response.render("oneclick_mall_deferred/finish", {
+      step: "La inscripción fue anulada por el usuario",
+      stepDescription:
+        "En este paso abandonamos la inscripción al haber presionado la opción 'Abandonar y volver al comercio'",
+      viewData,
+    });
+  }
+  else{
+    response.render("oneclick_mall_deferred/finish", {
+      step: "Finalizar inscripción",
+      stepDescription:
+        "En este paso terminaremos la inscripción, para luego poder hacer cargos " +
+        "cargos a la tarjeta que el tarjetahabiente inscriba.",
+      viewData,
+    });
+  }
+  
 });
 
 exports.authorize = asyncHandler(async (request, response, next) => {
