@@ -10,7 +10,7 @@ block step
         code.json
           | {
           |   'TBK_TOKEN': '#{viewData.token}'
-          | }
+          | }
   .row
     .col.m8
       pre.z-depth-2
@@ -26,52 +26,44 @@ block step
   .row
     .col.m4
       h5 Respuesta
-      -if (viewData.finishResponse.response_code !== -96)
-        p 
-          | Transbank contestará con lo siguiente.
-          | Debes guardar esta información. Para poder luego autorizar transacciones 
-          | vas a necesitar el <code></code>
-      -if (viewData.finishResponse.response_code === -96)
-        p 
-          | Transbank contestará con lo siguiente cuando abandones la inscripción.
+      p 
+        | Transbank contestará con lo siguiente.
+        | Debes guardar esta información. Para poder luego autorizar transacciones 
+        | vas a necesitar el <code></code>
     .col.m8
       pre.z-depth-2
         code.json= JSON.stringify(viewData.finishResponse, null, ' ')
 
 block actions
-  -if (viewData.finishResponse.response_code !== -96)
-    .row
-      .col.m12
-        h4 La tarjeta ya está inscrita!
-    .row
-      .col.m12
-        h5 Autorizar una transacción
-        p Para autorizar una transacción debes guardar datos de la respuesta necesarios
-        table
-          thead
-            tr
-              th Campo
-              th Valor
-          tbody
-            tr
-              td
-                strong Nombre de usuario (username)
-              td#username-td 
+  .row
+    .col.m12
+      h4 La tarjeta ya está inscrita!
+  .row
+    .col.m12
+      h5 Autorizar una transacción
+      p Para autorizar una transacción debes guardar datos de la respuesta necesarios
+      table
+        thead
+          tr
+            th Campo
+            th Valor
+        tbody
+          tr
+            td
+              strong Nombre de usuario (username)
+            td#username-td 
 
-            tr
-              td
-                strong TBK User (tbk_user)
-              td #{viewData.finishResponse.tbk_user}
-    .row
-      .col.m12
-        form(action="authorize", method="POST", id="authorizeForm")
-          input(type="hidden", name="username", id="username")
-          input(type="hidden", name="tbk_user", value=viewData.finishResponse.tbk_user)
-          button.waves-effect.waves-light.btn.pink.white-text(type="submit") Autorizar un pago
-  -if (viewData.finishResponse.response_code === -96)
-      .row
-          .col.m12
-            h4 Se abandonó la inscripción!
+          tr
+            td
+              strong TBK User (tbk_user)
+            td #{viewData.finishResponse.tbk_user}
+  .row
+    .col.m12
+      form(action="authorize", method="POST", id="authorizeForm")
+        input(type="hidden", name="username", id="username")
+        input(type="hidden", name="tbk_user", value=viewData.finishResponse.tbk_user)
+        button.waves-effect.waves-light.btn.pink.white-text(type="submit") Autorizar un pago
+
   script.
     document.getElementById('username').value = window.localStorage.getItem('username');
     document.getElementById('username-td').innerHTML = window.localStorage.getItem('username');
