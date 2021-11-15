@@ -1,96 +1,67 @@
 extends ../webpay_plus/template
 
 block step
-  -if (viewData.token != null)
-    .row
-      .col.m4
-        h5 Datos recibidos
-        p Luego de que se termina el flujo en el formulario de pago recibiras un POST con lo siguiente
-      .col.m8
-        pre.z-depth-2
-          code.json
-            | {
-            |   'token_ws': '#{viewData.token}'
-            | }
-  -if (viewData.token == null)
-    .row
-      .col.m4
-        h5 Datos recibidos
-        p Luego de que se anula la compra en el formulario de pago recibiras un POST con lo siguiente
-      .col.m8
-        pre.z-depth-2
-          code.json
-            | {
-            |   'tbk_token': '#{viewData.tbkToken}',
-            |   'tbk_orden_compra': '#{viewData.tbkOrdenCompra}',
-            |   'tbk_id_sesion': '#{viewData.tbkIdSesion}'
-            | }
-  -if (viewData.token != null)
-    .row
-      .col.m8
-        pre.z-depth-2
-          code.js
-            | // En el caso de Express
-            | let token = request.body.token_ws;
-            | const commitResponse = await WebpayPlus.MallTransaction.commit(token);
-      .col.m4
-        h5 Petición
-        p 
-          | Usaras el token recibido para confirmar la transacción usando 
-          | nuevamente <code>WebpayPlus</code>
-    .row
-      .col.m4
-        h5 Respuesta
-        p 
-          | Transbank contestará con lo siguiente.
-          | Debes guardar esta información, lo <strong>único</strong> que debes validar es 
-          | que <code>response_code</code> sea igual a cero.
-      .col.m8
-        pre.z-depth-2
-          code.json= JSON.stringify(viewData.commitResponse, null, ' ')
+  .row
+    .col.m4
+      h5 Datos recibidos
+      p Luego de que se termina el flujo en el formulario de pago recibiras un POST con lo siguiente
+    .col.m8
+      pre.z-depth-2
+        code.json
+          | {
+          |   'token_ws': '#{viewData.token}'
+          | }
+  .row
+    .col.m8
+      pre.z-depth-2
+        code.js
+          | // En el caso de Express
+          | let token = request.body.token_ws;
+          | const commitResponse = await WebpayPlus.MallTransaction.commit(token);
+    .col.m4
+      h5 Petición
+      p 
+        | Usaras el token recibido para confirmar la transacción usando 
+        | nuevamente <code>WebpayPlus</code>
+  .row
+    .col.m4
+      h5 Respuesta
+      p 
+        | Transbank contestará con lo siguiente.
+        | Debes guardar esta información, lo <strong>único</strong> que debes validar es 
+        | que <code>response_code</code> sea igual a cero.
+    .col.m8
+      pre.z-depth-2
+        code.json= JSON.stringify(viewData.commitResponse, null, ' ')
 
-    .row
-      .col.m12
-        h4 Listo !
-        p Ya puedes mostrar al usuario una página de éxito de la transacción.
+  .row
+    .col.m12
+      h4 Listo !
+      p Ya puedes mostrar al usuario una página de éxito de la transacción.
 
 block actions
-  -if (viewData.token != null)
-    .row
-      .col.m12
-        h5 Otras utilidades
-        p 
-          | Luego de confirmada la transacción puedes Reembolsar (reversar o anular) el 
-          | pago dependiendo de ciertas condiciones comerciales. También puedes consultar el estado
-          | de la transacción hasta 7 días después de realizada.
-    .row
-      .col.m6
-        form(action="/webpay_plus_mall/status", method="post")
-          input(type="hidden" value=viewData.token, name="token")
-          button(type="submit").btn.waves-effect.waves-light.pink.white-text Consultar Estado
-      .col.m6
-        form(action="/webpay_plus_mall/refund", method="post")
-          button.btn.waves-effect.waves-light.pink.white-text(type="submit") Reembolsar
-          input(type="hidden" value=viewData.token, name="token")
-          .input-field(style="margin-top: 25px")
-            input(type="text", name="buy_order", value=viewData.commitResponse.details[0].buy_order)
-            label(for="buy_order") Orden de compra:
-          .input-field(style="margin-top: 25px")
-            input(type="text", name="commerce_code", value=viewData.commitResponse.details[0].commerce_code)
-            label(for="commerce_code") Código de Comercio:
-          .input-field(style="margin-top: 25px")
-            input(type="number", name="amount", value=viewData.commitResponse.details[0].amount)
-            label(for="amount") Monto a reembolsar:
-  -if (viewData.token == null)
-    .row
+  .row
     .col.m12
       h5 Otras utilidades
       p 
-        | Luego de anulada la compra solo puedes consultar el estado
+        | Luego de confirmada la transacción puedes Reembolsar (reversar o anular) el 
+        | pago dependiendo de ciertas condiciones comerciales. También puedes consultar el estado
         | de la transacción hasta 7 días después de realizada.
-    .row
-      .col.m6
-        form(action="/webpay_plus_mall/status", method="post")
-          input(type="hidden" value=viewData.tbkToken, name="token")
-          button(type="submit").btn.waves-effect.waves-light.pink.white-text Consultar Estado
-
+  .row
+    .col.m6
+      form(action="/webpay_plus_mall/status", method="post")
+        input(type="hidden" value=viewData.token, name="token")
+        button(type="submit").btn.waves-effect.waves-light.pink.white-text Consultar Estado
+    .col.m6
+      form(action="/webpay_plus_mall/refund", method="post")
+        button.btn.waves-effect.waves-light.pink.white-text(type="submit") Reembolsar
+        input(type="hidden" value=viewData.token, name="token")
+        .input-field(style="margin-top: 25px")
+          input(type="text", name="buy_order", value=viewData.commitResponse.details[0].buy_order)
+          label(for="buy_order") Orden de compra:
+        .input-field(style="margin-top: 25px")
+          input(type="text", name="commerce_code", value=viewData.commitResponse.details[0].commerce_code)
+          label(for="commerce_code") Código de Comercio:
+        .input-field(style="margin-top: 25px")
+          input(type="number", name="amount", value=viewData.commitResponse.details[0].amount)
+          label(for="amount") Monto a reembolsar:

@@ -34,25 +34,21 @@ exports.start = asyncHandler(async (request, response, next) => {
   });
 });
 
+
 exports.finish = asyncHandler(async (request, response, next) => {
   let token = request.body.TBK_TOKEN;
+  let tbkOrdenCompra = request.body.TBK_ORDEN_COMPRA;
+  let tbkIdSesion = request.body.TBK_ID_SESION;
 
-  const finishResponse = await Oneclick.MallDeferredInscription.finish(token);
+  console.log('oneclick_mall', request.body);
 
-  let viewData = {
-    token,
-    finishResponse,
-  };
+  if (tbkOrdenCompra === null){
+    const finishResponse = await Oneclick.MallDeferredInscription.finish(token);
+    let viewData = {
+      token,
+      finishResponse,
+    };
 
-  if (finishResponse.response_code === -96){
-    response.render("oneclick_mall_deferred/finish", {
-      step: "La inscripción fue anulada por el usuario",
-      stepDescription:
-        "En este paso abandonamos la inscripción al haber presionado la opción 'Abandonar y volver al comercio'",
-      viewData,
-    });
-  }
-  else{
     response.render("oneclick_mall_deferred/finish", {
       step: "Finalizar inscripción",
       stepDescription:
@@ -61,8 +57,23 @@ exports.finish = asyncHandler(async (request, response, next) => {
       viewData,
     });
   }
-  
+  else{
+    let viewData = {
+      token,
+      tbkOrdenCompra,
+      tbkIdSesion
+    };
+
+    response.render("oneclick_mall_deferred/finish-error", {
+      step: "La inscripción fue anulada por el usuario",
+      stepDescription:
+        "En este paso abandonamos la inscripción al haber presionado la opción 'Abandonar y volver al comercio'",
+      viewData,
+    });
+  }
+
 });
+
 
 exports.authorize = asyncHandler(async (request, response, next) => {
   const username = request.body.username;
