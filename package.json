@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start2": "node ./bin/www",
-    "start": "set DEBUG=transbank-sdk-nodejs-webpay-rest-example:* node ./bin/www"
+    "start": "DEBUG=transbank-sdk-nodejs-webpay-rest-example:* node ./bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
