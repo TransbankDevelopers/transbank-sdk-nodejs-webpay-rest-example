@@ -10,7 +10,7 @@ block step
         code.json
           | {
           |   'token_ws': '#{viewData.token}'
-          | }
+          | }
   .row
     .col.m8
       pre.z-depth-2
@@ -65,5 +65,3 @@ block actions
         .input-field(style="margin-top: 25px")
           input(type="number", name="amount", value=viewData.commitResponse.details[0].amount)
           label(for="amount") Monto a reembolsar:
-
-

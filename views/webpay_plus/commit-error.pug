@@ -1,0 +1,30 @@
+extends ../webpay_plus/template
+
+block step
+  .row
+    .col.m4
+      h5 Datos recibidos
+      p Luego de que se anula la compra en el formulario de pago recibiras un POST con lo siguiente
+    .col.m8
+      pre.z-depth-2
+        code.json
+          | {
+          |   'token_ws': '#{viewData.token}',
+          |   'tbk_token': '#{viewData.tbkToken}',
+          |   'tbk_orden_compra': '#{viewData.tbkOrdenCompra}',
+          |   'tbk_id_sesion': '#{viewData.tbkIdSesion}'
+          | }
+block actions
+  -if (viewData.tbkToken != null && viewData.tbkToken != '')
+    .row
+      .col.m12
+        h5 Otras utilidades
+        p 
+          | Luego de anulada la compra solo puedes consultar el estado
+          | de la transacción hasta 7 días después de realizada.
+    .row
+      .col.m6
+        form(action="/webpay_plus/status", method="post")
+          input(type="hidden" value=viewData.tbkToken, name="token")
+          button(type="submit").btn.waves-effect.waves-light.pink.white-text Consultar Estado
+

@@ -38,24 +38,66 @@ exports.create = asyncHandler(async function (request, response, next) {
   });
 });
 
+
 exports.commit = asyncHandler(async function (request, response, next) {
+
+  //Flujos:
+  //1. Flujo normal (OK): solo llega token_ws
+  //2. Timeout (más de 10 minutos en el formulario de Transbank): llegan TBK_ID_SESION y TBK_ORDEN_COMPRA
+  //3. Pago abortado (con botón anular compra en el formulario de Webpay): llegan TBK_TOKEN, TBK_ID_SESION, TBK_ORDEN_COMPRA
+  //4. Caso atipico: llega todos token_ws, TBK_TOKEN, TBK_ID_SESION, TBK_ORDEN_COMPRA
+
   let token = request.body.token_ws;
+  let tbkToken = request.body.TBK_TOKEN;
+  let tbkOrdenCompra = request.body.TBK_ORDEN_COMPRA;
+  let tbkIdSesion = request.body.TBK_ID_SESION;
 
-  const commitResponse = await WebpayPlus.DeferredTransaction.commit(token);
-
+  let step = null;
+  let stepDescription = null;
   let viewData = {
     token,
-    commitResponse,
+    tbkToken,
+    tbkOrdenCompra,
+    tbkIdSesion
   };
 
-  response.render("webpay_plus_deferred/commit", {
-    step: "Confirmar Transacción diferida",
-    stepDescription:
-      "En este paso tenemos que confirmar la transacción con el objetivo de avisar a " +
-      "Transbank que hemos recibido la transacción ha sido recibida exitosamente. En caso de que " +
-      "no se confirme la transacción, ésta será reversada.",
+  if (token && !tbkToken){//Flujo 1
+    const commitResponse = await WebpayPlus.DeferredTransaction.commit(token);
+    viewData = {
+      token,
+      commitResponse,
+    };
+    step = "Confirmar Transacción diferida";
+    stepDescription = "En este paso tenemos que confirmar la transacción con el objetivo de avisar a " +
+    "Transbank que hemos recibido la transacción ha sido recibida exitosamente. En caso de que " +
+    "no se confirme la transacción, ésta será reversada.";
+
+    response.render("webpay_plus_deferred/commit", {
+      step,
+      stepDescription,
+      viewData,
+    });
+    return;
+  }
+  else if (!token && !tbkToken){//Flujo 2
+    step = "Timeout => El pago fue anulado por tiempo de espera.";
+    stepDescription = "En este paso luego de anulación por tiempo de espera (+10 minutos) no es necesario realizar la confirmación ";
+  }
+  else if (!token && tbkToken){//Flujo 3
+    step = "Abortar pago => El pago fue anulado por el usuario.";
+    stepDescription = "En este paso luego de abandonar el formulario no es necesario realizar la confirmación ";
+  }
+  else if (token && tbkToken){//Flujo 4
+    step = "Pago inválido => El pago es inválido.";
+    stepDescription = "En este paso luego de abandonar el formulario no es necesario realizar la confirmación ";
+  }
+
+  response.render("webpay_plus_deferred/commit-error", {
+    step,
+    stepDescription,
     viewData,
   });
+
 });
 
 exports.capture = asyncHandler(async function (request, response, next) {
