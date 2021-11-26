@@ -36,9 +36,7 @@ exports.finish = asyncHandler(async (request, response, next) => {
   let tbkOrdenCompra = request.body.TBK_ORDEN_COMPRA;
   let tbkIdSesion = request.body.TBK_ID_SESION;
 
-  console.log('oneclick_mall', request.body);
-
-  if (tbkOrdenCompra === null){
+  if (tbkOrdenCompra == null){
     const finishResponse = await Oneclick.MallInscription.finish(token);
     let viewData = {
       token,
