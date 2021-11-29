@@ -42,7 +42,7 @@ exports.finish = asyncHandler(async (request, response, next) => {
 
   console.log('oneclick_mall', request.body);
 
-  if (tbkOrdenCompra === null){
+  if (tbkOrdenCompra == null){
     const finishResponse = await Oneclick.MallDeferredInscription.finish(token);
     let viewData = {
       token,
