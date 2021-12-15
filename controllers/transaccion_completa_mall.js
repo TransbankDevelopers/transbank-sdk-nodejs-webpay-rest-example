@@ -2,6 +2,7 @@ const TransaccionCompleta = require("transbank-sdk").TransaccionCompleta;
 const TransactionDetail = require("transbank-sdk").TransactionDetail;
 const InstallmentDetail = require("transbank-sdk").InstallmentDetail;
 const CommitDetail = require("transbank-sdk").CommitDetail;
+const IntegrationCommerceCodes = require("transbank-sdk").IntegrationCommerceCodes;
 const asyncHandler = require("../utils/async_handler");
 
 exports.form = asyncHandler(async function (request, response, next) {
@@ -22,16 +23,16 @@ exports.create = asyncHandler(async function (request, response, next) {
   let cardNumber = request.body.number;
   let month = request.body.expiry_month;
   let year = request.body.expiry_year;
-  let commerceCode = "597055555574";
+  let commerceCode = IntegrationCommerceCodes.TRANSACCION_COMPLETA_MALL_CHILD1;
 
   let details = [new TransactionDetail(amount, commerceCode, childBuyOrder)];
-  const createResponse = await TransaccionCompleta.MallTransaction.create(
+  const createResponse = await (new TransaccionCompleta.MallTransaction()).create(
     buyOrder,
     sessionId,
-    cvv,
     cardNumber,
     year + "/" + month,
-    details
+    details,
+    cvv
   );
 
   let viewData = {
@@ -57,7 +58,7 @@ exports.installments = asyncHandler(async function (request, response, next) {
     new InstallmentDetail(childCommerceCode, childBuyOrder, installments),
   ];
 
-  const installmentsResponse = await TransaccionCompleta.MallTransaction.installments(
+  const installmentsResponse = await (new TransaccionCompleta.MallTransaction()).installments(
     token,
     installmentDetails
   );
@@ -96,7 +97,7 @@ exports.commit = asyncHandler(async function (request, response, next) {
     ),
   ];
 
-  const commitResponse = await TransaccionCompleta.MallTransaction.commit(
+  const commitResponse = await (new TransaccionCompleta.MallTransaction()).commit(
     token,
     details
   );
@@ -119,7 +120,7 @@ exports.commit = asyncHandler(async function (request, response, next) {
 exports.status = asyncHandler(async function (request, response, next) {
   let token = request.body.token;
 
-  const statusResponse = await TransaccionCompleta.MallTransaction.status(
+  const statusResponse = await (new TransaccionCompleta.MallTransaction()).status(
     token
   );
 
@@ -143,7 +144,7 @@ exports.refund = asyncHandler(async function (request, response, next) {
   let buyOrder = request.body.child_buy_order;
   let commerceCode = request.body.child_commerce_code;
 
-  const refundResponse = await TransaccionCompleta.MallTransaction.refund(
+  const refundResponse = await (new TransaccionCompleta.MallTransaction()).refund(
     token,
     buyOrder,
     commerceCode,

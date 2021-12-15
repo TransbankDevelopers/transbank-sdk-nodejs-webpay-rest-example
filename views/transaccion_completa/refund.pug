@@ -17,7 +17,7 @@ block step
           | // Token: #{viewData.token}
           | // Amount: #{viewData.amount}
           | 
-          | const refundRequest = await TransaccionCompleta.Transaction.refund(token, amount);
+          | const refundRequest = await (new TransaccionCompleta.Transaction()).refund(token, amount);
 
   .row
     .col.m8

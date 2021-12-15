@@ -9,7 +9,7 @@ block step
     .col.m8
       pre.z-depth-2
         code.js
-          | const captureResponse = await WebpayPlus.DeferredTransaction.capture(
+          | const captureResponse = await (new WebpayPlus.Transaction()).capture(
           |   token,
           |   buyOrder,
           |   authorizationCode,

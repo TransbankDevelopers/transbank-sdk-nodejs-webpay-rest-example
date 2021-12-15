@@ -13,7 +13,7 @@ block step
           | import { Oneclick } from 'transbank-sdk'; // ES6 Modules
           |
           | // Es necesario ejecutar dentro de una función async para utilizar await
-          | const startResponse = await Oneclick.MallInscription.start(
+          | const startResponse = await (new Oneclick.MallInscription()).start(
           |   buyOrder, 
           |   sessionId, 
           |   amount, 

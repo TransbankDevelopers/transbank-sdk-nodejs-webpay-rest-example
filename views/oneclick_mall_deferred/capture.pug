@@ -9,7 +9,7 @@ block step
     .col.m8
       pre.z-depth-2
         code.js
-          | const captureResponse = await WebpayPlus.MallDeferredTransaction.capture(
+          | const captureResponse = await (new Oneclick.MallTransaction()).capture(
           |   commerceCode,
           |   childBuyOrder,
           |   authorizationCode,

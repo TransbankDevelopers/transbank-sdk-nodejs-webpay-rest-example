@@ -18,7 +18,8 @@ exports.create = asyncHandler(async function (request, response, next) {
   let cardNumber = request.body.number;
   let month = request.body.expiry_month;
   let year = request.body.expiry_year;
-  const createResponse = await TransaccionCompleta.Transaction.create(
+  
+  const createResponse = await (new TransaccionCompleta.Transaction()).create(
     buyOrder,
     sessionId,
     amount,
@@ -44,7 +45,7 @@ exports.create = asyncHandler(async function (request, response, next) {
 exports.installments = asyncHandler(async function (request, response, next) {
   let token = request.body.token;
   let installments = request.body.installments;
-  const installmentsResponse = await TransaccionCompleta.Transaction.installments(
+  const installmentsResponse = await (new TransaccionCompleta.Transaction()).installments(
     token,
     installments
   );
@@ -69,7 +70,7 @@ exports.commit = asyncHandler(async function (request, response, next) {
   let deferredPeriodIndex = request.body.deferred_period_index;
   let gracePeriod = request.body.gracePeriod;
 
-  const commitResponse = await TransaccionCompleta.Transaction.commit(
+  const commitResponse = await (new TransaccionCompleta.Transaction()).commit(
     token,
     idQueryInstallments,
     deferredPeriodIndex,
@@ -94,7 +95,7 @@ exports.commit = asyncHandler(async function (request, response, next) {
 exports.status = asyncHandler(async function (request, response, next) {
   let token = request.body.token;
 
-  const statusResponse = await TransaccionCompleta.Transaction.status(token);
+  const statusResponse = await (new TransaccionCompleta.Transaction()).status(token);
 
   let viewData = {
     token,
@@ -114,7 +115,7 @@ exports.status = asyncHandler(async function (request, response, next) {
 exports.refund = asyncHandler(async function (request, response, next) {
   let { token, amount } = request.body;
 
-  const refundResponse = await TransaccionCompleta.Transaction.refund(
+  const refundResponse = await (new TransaccionCompleta.Transaction()).refund(
     token,
     amount
   );

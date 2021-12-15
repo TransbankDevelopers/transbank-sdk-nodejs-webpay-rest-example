@@ -12,7 +12,7 @@ block step
         code.z-depth-2.js
           | // Token: #{viewData.token}
           |
-          | const statusResponse = await TransaccionCompleta.MallTransaction.status(token);
+          | const statusResponse = await (new TransaccionCompleta.MallTransaction()).status(token);
   .row
     .col.m8
       pre.z-depth-2

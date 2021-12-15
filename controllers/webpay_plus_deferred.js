@@ -11,7 +11,7 @@ exports.create = asyncHandler(async function (request, response, next) {
     request.get("host") +
     "/webpay_plus_deferred/commit";
 
-  const createResponse = await WebpayPlus.DeferredTransaction.create(
+  const createResponse = await (new WebpayPlus.Transaction()).create(
     buyOrder,
     sessionId,
     amount,
@@ -39,6 +39,8 @@ exports.create = asyncHandler(async function (request, response, next) {
 });
 
 
+
+
 exports.commit = asyncHandler(async function (request, response, next) {
 
   //Flujos:
@@ -47,10 +49,12 @@ exports.commit = asyncHandler(async function (request, response, next) {
   //3. Pago abortado (con botón anular compra en el formulario de Webpay): llegan TBK_TOKEN, TBK_ID_SESION, TBK_ORDEN_COMPRA
   //4. Caso atipico: llega todos token_ws, TBK_TOKEN, TBK_ID_SESION, TBK_ORDEN_COMPRA
 
-  let token = request.body.token_ws;
-  let tbkToken = request.body.TBK_TOKEN;
-  let tbkOrdenCompra = request.body.TBK_ORDEN_COMPRA;
-  let tbkIdSesion = request.body.TBK_ID_SESION;
+  let params = request.method === 'GET' ? request.query : request.body;
+
+  let token = params.token_ws;
+  let tbkToken = params.TBK_TOKEN;
+  let tbkOrdenCompra = params.TBK_ORDEN_COMPRA;
+  let tbkIdSesion = params.TBK_ID_SESION;
 
   let step = null;
   let stepDescription = null;
@@ -62,7 +66,7 @@ exports.commit = asyncHandler(async function (request, response, next) {
   };
 
   if (token && !tbkToken){//Flujo 1
-    const commitResponse = await WebpayPlus.DeferredTransaction.commit(token);
+    const commitResponse = await (new WebpayPlus.Transaction()).commit(token);
     viewData = {
       token,
       commitResponse,
@@ -106,7 +110,7 @@ exports.capture = asyncHandler(async function (request, response, next) {
   let authorizationCode = request.body.authorization_code;
   let captureAmount = request.body.capture_amount;
 
-  const captureResponse = await WebpayPlus.DeferredTransaction.capture(
+  const captureResponse = await (new WebpayPlus.Transaction()).capture(
     token,
     buyOrder,
     authorizationCode,
@@ -133,7 +137,7 @@ exports.capture = asyncHandler(async function (request, response, next) {
 exports.status = asyncHandler(async function (request, response, next) {
   let token = request.body.token;
 
-  const statusResponse = await WebpayPlus.DeferredTransaction.status(token);
+  const statusResponse = await (new WebpayPlus.Transaction()).status(token);
 
   let viewData = {
     token,
@@ -153,7 +157,7 @@ exports.status = asyncHandler(async function (request, response, next) {
 exports.refund = asyncHandler(async function (request, response, next) {
   let { token, amount } = request.body;
 
-  const refundResponse = await WebpayPlus.DeferredTransaction.refund(
+  const refundResponse = await (new WebpayPlus.Transaction()).refund(
     token,
     amount
   );

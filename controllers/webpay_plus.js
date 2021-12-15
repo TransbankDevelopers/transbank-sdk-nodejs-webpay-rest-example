@@ -8,7 +8,7 @@ exports.create = asyncHandler(async function (request, response, next) {
   let returnUrl =
     request.protocol + "://" + request.get("host") + "/webpay_plus/commit";
 
-  const createResponse = await WebpayPlus.Transaction.create(
+  const createResponse = await (new WebpayPlus.Transaction()).create(
     buyOrder,
     sessionId,
     amount,
@@ -36,17 +36,20 @@ exports.create = asyncHandler(async function (request, response, next) {
 });
 
 exports.commit = asyncHandler(async function (request, response, next) {
-
   //Flujos:
   //1. Flujo normal (OK): solo llega token_ws
   //2. Timeout (más de 10 minutos en el formulario de Transbank): llegan TBK_ID_SESION y TBK_ORDEN_COMPRA
   //3. Pago abortado (con botón anular compra en el formulario de Webpay): llegan TBK_TOKEN, TBK_ID_SESION, TBK_ORDEN_COMPRA
   //4. Caso atipico: llega todos token_ws, TBK_TOKEN, TBK_ID_SESION, TBK_ORDEN_COMPRA
+  console.log("================================================================================");
+  console.log(request);
+  console.log("================================================================================");
+  let params = request.method === 'GET' ? request.query : request.body;
 
-  let token = request.body.token_ws;
-  let tbkToken = request.body.TBK_TOKEN;
-  let tbkOrdenCompra = request.body.TBK_ORDEN_COMPRA;
-  let tbkIdSesion = request.body.TBK_ID_SESION;
+  let token = params.token_ws;
+  let tbkToken = params.TBK_TOKEN;
+  let tbkOrdenCompra = params.TBK_ORDEN_COMPRA;
+  let tbkIdSesion = params.TBK_ID_SESION;
 
   let step = null;
   let stepDescription = null;
@@ -58,7 +61,7 @@ exports.commit = asyncHandler(async function (request, response, next) {
   };
 
   if (token && !tbkToken){//Flujo 1
-    const commitResponse = await WebpayPlus.Transaction.commit(token);
+    const commitResponse = await (new WebpayPlus.Transaction()).commit(token);
     viewData = {
       token,
       commitResponse,
@@ -93,13 +96,14 @@ exports.commit = asyncHandler(async function (request, response, next) {
     stepDescription,
     viewData,
   });
-
 });
+
+
 
 exports.status = asyncHandler(async function (request, response, next) {
   let token = request.body.token;
 
-  const statusResponse = await WebpayPlus.Transaction.status(token);
+  const statusResponse = await (new WebpayPlus.Transaction()).status(token);
 
   let viewData = {
     token,
@@ -119,7 +123,7 @@ exports.status = asyncHandler(async function (request, response, next) {
 exports.refund = asyncHandler(async function (request, response, next) {
   let { token, amount } = request.body;
 
-  const refundResponse = await WebpayPlus.Transaction.refund(token, amount);
+  const refundResponse = await (new WebpayPlus.Transaction()).refund(token, amount);
 
   let viewData = {
     token,

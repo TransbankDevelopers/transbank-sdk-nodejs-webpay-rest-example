@@ -15,7 +15,7 @@ block step
           | let details = [new TransactionDetail(amount, commerceCode, childBuyOrder)];
           |
           | // Es necesario ejecutar dentro de una función async para utilizar await
-          | const createResponse = await TransaccionCompleta.MallTransaction.create(
+          | const createResponse = await (new TransaccionCompleta.MallTransaction()).create(
           |   buyOrder, 
           |   sessionId, 
           |   cvv,

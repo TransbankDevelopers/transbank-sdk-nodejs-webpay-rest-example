@@ -10,7 +10,7 @@ router.use(function (req, res, next) {
       process.env.TXC_KEY
     );
   } else {
-    TransaccionCompleta.configureTransaccionCompletaForTesting();
+    TransaccionCompleta.configureForTesting();
   }
   next();
 });

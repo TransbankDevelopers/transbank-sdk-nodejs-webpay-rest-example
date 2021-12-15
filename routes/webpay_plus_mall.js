@@ -10,17 +10,15 @@ router.use(function (req, res, next) {
       process.env.WPPM_KEY
     );
   } else {
-    WebpayPlus.configureWebpayPlusMallForTesting();
+    WebpayPlus.configureForTestingMall();
   }
   next();
 });
 
 router.get("/create", webpayPlusController.create);
-
+router.get("/commit", webpayPlusController.commit);
 router.post("/commit", webpayPlusController.commit);
-
 router.post("/status", webpayPlusController.status);
-
 router.post("/refund", webpayPlusController.refund);
 
 module.exports = router;

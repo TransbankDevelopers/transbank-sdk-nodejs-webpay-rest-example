@@ -19,7 +19,7 @@ block step
           | // BuyOrder: #{viewData.buyOrder}
           | // Amount: #{viewData.amount}
           | 
-          | const refundRequest = await Oneclick.MallDeferredTransaction.refund(
+          | const refundRequest = await (new Oneclick.MallTransaction()).refund(
           |   buyOrder,
           |   childCommerceCode,
           |   childBuyOrder,
