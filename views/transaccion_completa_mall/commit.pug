@@ -25,7 +25,7 @@ block step
           |    ),
           |  ];
           |
-          | const commitResponse = await TransaccionCompleta.MallTransaction.commit(
+          | const commitResponse = await (new TransaccionCompleta.MallTransaction()).commit(
           |   token,
           |   details
           | );

@@ -12,7 +12,7 @@ block step
           | import { TransaccionCompleta } from 'transbank-sdk'; // ES6
           |
           | // Es necesario ejecutar dentro de una función async para utilizar await
-          | const installmentsResponse = await TransaccionCompleta.Transaction.installments(
+          | const installmentsResponse = await (new TransaccionCompleta.Transaction()).installments(
           |   token, 
           |   installments, 
           | );

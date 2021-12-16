@@ -20,7 +20,7 @@ block step
           | ]
           | 
           | // Es necesario ejecutar dentro de una función async para utilizar await
-          | const createResponse = await WebpayPlus.MallDeferredTransaction.create(
+          | const createResponse = await (new WebpayPlus.MallTransaction()).create(
           |   buyOrder, 
           |   sessionId, 
           |   details, 

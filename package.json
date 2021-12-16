@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "DEBUG=transbank-sdk-nodejs-webpay-rest-example:* node ./bin/www"
+    "start": "DEBUG=transbank-sdk-nodejs-webpay-rest-example:* node ./bin/www",
+    "start-windows": "node ./bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -13,7 +14,7 @@
     "morgan": "~1.9.1",
     "pug": "2.0.0-beta11",
     "serve-favicon": "^2.5.0",
-    "transbank-sdk": "2.1.3"
+    "transbank-sdk": "3.0.0"
   },
   "devDependencies": {
     "dotenv": "^8.2.0"

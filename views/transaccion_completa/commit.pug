@@ -14,7 +14,7 @@ block step
           | const TransaccionCompleta = require('transbank-sdk').TransaccionCompleta; // CommonJS
           | import { TransaccionCompleta } from 'transbank-sdk'; // ES6 Modules
           |
-          | const commitResponse = await TransaccionCompleta.Transaction.commit(
+          | const commitResponse = await (new TransaccionCompleta.Transaction()).commit(
           |   token,
           |   idQueryInstallments
           | );

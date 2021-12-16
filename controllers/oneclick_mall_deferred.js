@@ -1,6 +1,8 @@
-const asyncHandler = require("../utils/async_handler");
 const Oneclick = require("transbank-sdk").Oneclick;
 const TransactionDetail = require("transbank-sdk").TransactionDetail;
+const asyncHandler = require("../utils/async_handler");
+const IntegrationCommerceCodes = require("transbank-sdk").IntegrationCommerceCodes;
+
 
 exports.start = asyncHandler(async (request, response, next) => {
   let randomNumber = Math.floor(Math.random() * 100000) + 1;
@@ -12,7 +14,7 @@ exports.start = asyncHandler(async (request, response, next) => {
     request.get("host") +
     "/oneclick_mall_deferred/finish";
 
-  const startResponse = await Oneclick.MallDeferredInscription.start(
+  const startResponse = await (new Oneclick.MallInscription()).start(
     userName,
     email,
     responseUrl
@@ -35,15 +37,17 @@ exports.start = asyncHandler(async (request, response, next) => {
 });
 
 
-exports.finish = asyncHandler(async (request, response, next) => {
-  let token = request.body.TBK_TOKEN;
-  let tbkOrdenCompra = request.body.TBK_ORDEN_COMPRA;
-  let tbkIdSesion = request.body.TBK_ID_SESION;
 
-  console.log('oneclick_mall', request.body);
+
+exports.finish = asyncHandler(async (request, response, next) => {
+  let params = request.method === 'GET' ? request.query : request.body;
+
+  let token = params.TBK_TOKEN;
+  let tbkOrdenCompra = params.TBK_ORDEN_COMPRA;
+  let tbkIdSesion = params.TBK_ID_SESION;
 
   if (tbkOrdenCompra == null){
-    const finishResponse = await Oneclick.MallDeferredInscription.finish(token);
+    const finishResponse = await (new Oneclick.MallInscription()).finish(token);
     let viewData = {
       token,
       finishResponse,
@@ -82,13 +86,13 @@ exports.authorize = asyncHandler(async (request, response, next) => {
   const childBuyOrder = "O-" + Math.floor(Math.random() * 10000) + 1;
 
   let amount = Math.floor(Math.random() * 1000) + 1001;
-  let childCommerceCode = "597055555548";
+  let childCommerceCode = IntegrationCommerceCodes.ONECLICK_MALL_CHILD1_DEFERRED;
 
   const details = [
     new TransactionDetail(amount, childCommerceCode, childBuyOrder),
   ];
 
-  const authorizeResponse = await Oneclick.MallDeferredTransaction.authorize(
+  const authorizeResponse = await (new Oneclick.MallTransaction()).authorize(
     username,
     tbkUser,
     buyOrder,
@@ -121,11 +125,15 @@ exports.capture = asyncHandler(async (request, response, next) => {
   let authorizationCode = request.body.authorization_code;
   let captureAmount = request.body.capture_amount;
 
-  const captureResponse = await Oneclick.MallDeferredTransaction.capture(
+  console.log("================================================================================");
+  console.log(request);
+  console.log("================================================================================");
+
+  const captureResponse = await (new Oneclick.MallTransaction()).capture(
     commerceCode,
     childBuyOrder,
-    captureAmount,
-    authorizationCode
+    authorizationCode,
+    captureAmount
   );
 
   let viewData = {
@@ -149,7 +157,7 @@ exports.capture = asyncHandler(async (request, response, next) => {
 exports.status = asyncHandler(async (request, response, next) => {
   const buyOrder = request.body.buy_order;
 
-  const statusResponse = await Oneclick.MallDeferredTransaction.status(
+  const statusResponse = await (new Oneclick.MallTransaction()).status(
     buyOrder
   );
 
@@ -172,7 +180,7 @@ exports.refund = asyncHandler(async (request, response, next) => {
   const childBuyOrder = request.body.child_buy_order;
   const amount = request.body.amount;
 
-  const refundResponse = await Oneclick.MallDeferredTransaction.refund(
+  const refundResponse = await (new Oneclick.MallTransaction()).refund(
     buyOrder,
     childCommerceCode,
     childBuyOrder,

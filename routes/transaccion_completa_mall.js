@@ -9,7 +9,7 @@ router.use(function (req, res, next) {
       process.env.TXCM_KEY
     );
   } else {
-    TransaccionCompleta.configureTransaccionCompletaMallForTesting();
+    TransaccionCompleta.configureForTestingMall();
   }
   next();
 });

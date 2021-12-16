@@ -1,5 +1,6 @@
 const WebpayPlus = require("transbank-sdk").WebpayPlus;
 const TransactionDetail = require("transbank-sdk").TransactionDetail;
+const IntegrationCommerceCodes = require("transbank-sdk").IntegrationCommerceCodes;
 const asyncHandler = require("../utils/async_handler");
 
 exports.create = asyncHandler(async function (request, response, next) {
@@ -9,7 +10,7 @@ exports.create = asyncHandler(async function (request, response, next) {
   if (process.env.WPPM_CC && process.env.WPPM_KEY) {
     childCommerceCode = process.env.WPPM_C_CC;
   } else {
-    childCommerceCode = "597055555536";
+    childCommerceCode = IntegrationCommerceCodes.WEBPAY_PLUS_MALL_CHILD1;
   }
   let details = [
     new TransactionDetail(
@@ -21,7 +22,7 @@ exports.create = asyncHandler(async function (request, response, next) {
   let returnUrl =
     request.protocol + "://" + request.get("host") + "/webpay_plus_mall/commit";
 
-  const createResponse = await WebpayPlus.MallTransaction.create(
+  const createResponse = await (new WebpayPlus.MallTransaction()).create(
     buyOrder,
     sessionId,
     returnUrl,
@@ -57,10 +58,12 @@ exports.commit = asyncHandler(async function (request, response, next) {
   //3. Pago abortado (con botón anular compra en el formulario de Webpay): llegan TBK_TOKEN, TBK_ID_SESION, TBK_ORDEN_COMPRA
   //4. Caso atipico: llega todos token_ws, TBK_TOKEN, TBK_ID_SESION, TBK_ORDEN_COMPRA
 
-  let token = request.body.token_ws;
-  let tbkToken = request.body.TBK_TOKEN;
-  let tbkOrdenCompra = request.body.TBK_ORDEN_COMPRA;
-  let tbkIdSesion = request.body.TBK_ID_SESION;
+  let params = request.method === 'GET' ? request.query : request.body;
+
+  let token = params.token_ws;
+  let tbkToken = params.TBK_TOKEN;
+  let tbkOrdenCompra = params.TBK_ORDEN_COMPRA;
+  let tbkIdSesion = params.TBK_ID_SESION;
 
   let step = null;
   let stepDescription = null;
@@ -72,7 +75,7 @@ exports.commit = asyncHandler(async function (request, response, next) {
   };
 
   if (token && !tbkToken){//Flujo 1
-    const commitResponse = await WebpayPlus.MallTransaction.commit(token);
+    const commitResponse = await (new WebpayPlus.MallTransaction()).commit(token);
     viewData = {
       token,
       commitResponse,
@@ -113,7 +116,7 @@ exports.commit = asyncHandler(async function (request, response, next) {
 exports.status = asyncHandler(async function (request, response, next) {
   let token = request.body.token;
 
-  const statusResponse = await WebpayPlus.MallTransaction.status(token);
+  const statusResponse = await (new WebpayPlus.MallTransaction()).status(token);
 
   let viewData = {
     token,
@@ -135,7 +138,7 @@ exports.refund = asyncHandler(async function (request, response, next) {
   let buyOrder = request.body.buy_order;
   let commerceCode = request.body.commerce_code;
 
-  const refundResponse = await WebpayPlus.MallTransaction.refund(
+  const refundResponse = await (new WebpayPlus.MallTransaction()).refund(
     token,
     buyOrder,
     commerceCode,

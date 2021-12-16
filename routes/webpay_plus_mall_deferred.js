@@ -10,19 +10,16 @@ router.use(function (req, res, next) {
       process.env.WPPMD_KEY
     );
   } else {
-    WebpayPlus.configureWebpayPlusMallDeferredForTesting();
+    WebpayPlus.configureForTestingMallDeferred();
   }
   next();
 });
 
 router.get("/create", webpayPlusMallDeferredController.create);
-
+router.get("/commit", webpayPlusMallDeferredController.commit);
 router.post("/commit", webpayPlusMallDeferredController.commit);
-
 router.post("/capture", webpayPlusMallDeferredController.capture);
-
 router.post("/status", webpayPlusMallDeferredController.status);
-
 router.post("/refund", webpayPlusMallDeferredController.refund);
 
 module.exports = router;

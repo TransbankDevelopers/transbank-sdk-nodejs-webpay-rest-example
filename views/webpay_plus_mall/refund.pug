@@ -19,7 +19,7 @@ block step
           | // Token: #{viewData.token}
           | // Amount: #{viewData.amount}
           | 
-          | const refundRequest = await WebpayPlus.MallTransaction.refund(
+          | const refundRequest = await (new WebpayPlus.MallTransaction()).refund(
           |   token,
           |   buyOrder,
           |   commerceCode,
