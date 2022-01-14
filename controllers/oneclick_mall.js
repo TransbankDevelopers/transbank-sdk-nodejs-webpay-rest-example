@@ -76,6 +76,8 @@ exports.finish = asyncHandler(async (request, response, next) => {
 
 });
 
+
+
 exports.authorize = asyncHandler(async (request, response, next) => {
   const username = request.body.username;
   const tbkUser = request.body.tbk_user;
@@ -111,6 +113,24 @@ exports.authorize = asyncHandler(async (request, response, next) => {
     step: "Autorizar transacción",
     stepDescription:
       "En este paso autorizaremos una transacción en la tarjeta inscrita.",
+    viewData,
+  });
+});
+
+exports.delete = asyncHandler(async (request, response, next) => {
+  const username = request.body.username;
+  const tbkUser = request.body.tbk_user;
+  await (new Oneclick.MallInscription()).delete(tbkUser, username);
+  
+  let viewData = {
+    username,
+    tbkUser
+  };
+
+  response.render("oneclick_mall/delete", {
+    step: "Eliminar inscripción",
+    stepDescription:
+      "En este paso eliminaremos la inscripción.",
     viewData,
   });
 });

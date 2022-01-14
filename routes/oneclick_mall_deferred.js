@@ -15,6 +15,7 @@ router.use(function (req, res, next) {
 router.get("/start", oneclickMallDeferredController.start);
 router.get("/finish", oneclickMallDeferredController.finish);
 router.post("/finish", oneclickMallDeferredController.finish);
+router.post("/delete", oneclickMallDeferredController.delete);
 router.post("/authorize", oneclickMallDeferredController.authorize);
 router.post("/capture", oneclickMallDeferredController.capture);
 router.post("/status", oneclickMallDeferredController.status);

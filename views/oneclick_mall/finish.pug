@@ -58,12 +58,18 @@ block actions
               strong TBK User (tbk_user)
             td #{viewData.finishResponse.tbk_user}
   .row
-    .col.m12
+    .col.m6
       form(action="authorize", method="POST", id="authorizeForm")
         input(type="hidden", name="username", id="username")
         input(type="hidden", name="tbk_user", value=viewData.finishResponse.tbk_user)
         button.waves-effect.waves-light.btn.pink.white-text(type="submit") Autorizar un pago
+    .col.m6
+      form(action="delete", method="POST", id="deleteForm")
+        input(type="hidden", name="username", id="username2")
+        input(type="hidden", name="tbk_user", value=viewData.finishResponse.tbk_user)
+        button.waves-effect.waves-light.btn.pink.white-text(type="submit") Borrar Usuario
 
   script.
     document.getElementById('username').value = window.localStorage.getItem('username');
+    document.getElementById('username2').value = window.localStorage.getItem('username');
     document.getElementById('username-td').innerHTML = window.localStorage.getItem('username');
