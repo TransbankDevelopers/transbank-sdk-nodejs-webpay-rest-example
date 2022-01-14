@@ -78,6 +78,24 @@ exports.finish = asyncHandler(async (request, response, next) => {
 
 });
 
+exports.delete = asyncHandler(async (request, response, next) => {
+  const username = request.body.username;
+  const tbkUser = request.body.tbk_user;
+  await (new Oneclick.MallInscription()).delete(tbkUser, username);
+  
+  let viewData = {
+    username,
+    tbkUser
+  };
+
+  response.render("oneclick_mall_deferred/delete", {
+    step: "Eliminar inscripción",
+    stepDescription:
+      "En este paso eliminaremos la inscripción.",
+    viewData,
+  });
+});
+
 
 exports.authorize = asyncHandler(async (request, response, next) => {
   const username = request.body.username;

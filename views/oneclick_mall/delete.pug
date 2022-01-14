@@ -1,0 +1,21 @@
+extends template
+
+block step
+  .row
+    .col.m4
+      h5 Petición
+      p 
+        | Necesitas el <code>userName</code> (Nombre de Usuario) y el <code>tbkUser</code>
+        | y llamar a <code>Oneclick.MallInscription</code>.
+    .col.m8.valign-wrapper
+      pre.valign
+        code.z-depth-2.js
+          |
+          | await (new Oneclick.MallInscription()).delete(tbkUser, username);
+          |
+  .row
+    .col.m12
+      h5 Respuesta
+      p 
+        | En caso de éxito Transbank responderá con un status code 204 (No Content) y el sdk no retornará respuesta.
+        | En el caso de no encontrarse el <code>userName</code> o <code>tbkUser</code> Transbank responderá con un status code 404 (Not Found) y el sdk retornara una excepción.
