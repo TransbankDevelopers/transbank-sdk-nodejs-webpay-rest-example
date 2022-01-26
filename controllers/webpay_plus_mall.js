@@ -74,7 +74,7 @@ exports.commit = asyncHandler(async function (request, response, next) {
     tbkIdSesion
   };
 
-  if (token && !tbkToken){//Flujo 1
+  if (token && !tbkToken) {//Flujo 1
     const commitResponse = await (new WebpayPlus.MallTransaction()).commit(token);
     viewData = {
       token,
@@ -82,8 +82,8 @@ exports.commit = asyncHandler(async function (request, response, next) {
     };
     step = "Confirmar Transacción Mall diferida";
     stepDescription = "En este paso tenemos que confirmar la transacción con el objetivo de avisar a " +
-    "Transbank que hemos recibido la transacción ha sido recibida exitosamente. En caso de que " +
-    "no se confirme la transacción, ésta será reversada.";
+      "Transbank que hemos recibido la transacción ha sido recibida exitosamente. En caso de que " +
+      "no se confirme la transacción, ésta será reversada.";
 
     response.render("webpay_plus_mall/commit", {
       step,
@@ -92,16 +92,16 @@ exports.commit = asyncHandler(async function (request, response, next) {
     });
     return;
   }
-  else if (!token && !tbkToken){//Flujo 2
-    step = "Timeout => El pago fue anulado por tiempo de espera.";
+  else if (!token && !tbkToken) {//Flujo 2
+    step = "El pago fue anulado por tiempo de espera.";
     stepDescription = "En este paso luego de anulación por tiempo de espera (+10 minutos) no es necesario realizar la confirmación ";
   }
-  else if (!token && tbkToken){//Flujo 3
-    step = "Abortar pago => El pago fue anulado por el usuario.";
+  else if (!token && tbkToken) {//Flujo 3
+    step = "El pago fue anulado por el usuario.";
     stepDescription = "En este paso luego de abandonar el formulario no es necesario realizar la confirmación ";
   }
-  else if (token && tbkToken){//Flujo 4
-    step = "Pago inválido => El pago es inválido.";
+  else if (token && tbkToken) {//Flujo 4
+    step = "El pago es inválido.";
     stepDescription = "En este paso luego de abandonar el formulario no es necesario realizar la confirmación ";
   }
 
