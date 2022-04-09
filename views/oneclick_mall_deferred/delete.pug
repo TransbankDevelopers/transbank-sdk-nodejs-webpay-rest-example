@@ -11,7 +11,8 @@ block step
       pre.valign
         code.z-depth-2.js
           |
-          | await (new Oneclick.MallInscription()).delete(tbkUser, username);
+          | const options = new Options(IntegrationCommerceCodes.ONECLICK_MALL_DEFERRED, IntegrationApiKeys.WEBPAY, Environment.Integration);
+          | await (new Oneclick.MallInscription(options)).delete(tbkUser, username);
           |
   .row
     .col.m12

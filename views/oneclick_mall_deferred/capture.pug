@@ -9,7 +9,8 @@ block step
     .col.m8
       pre.z-depth-2
         code.js
-          | const captureResponse = await (new Oneclick.MallTransaction()).capture(
+          | const options = new Options(IntegrationCommerceCodes.ONECLICK_MALL_DEFERRED, IntegrationApiKeys.WEBPAY, Environment.Integration);
+          | const captureResponse = await (new Oneclick.MallTransaction(options)).capture(
           |   commerceCode,
           |   childBuyOrder,
           |   authorizationCode,

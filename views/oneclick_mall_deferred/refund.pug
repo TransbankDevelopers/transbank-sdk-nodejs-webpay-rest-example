@@ -19,7 +19,8 @@ block step
           | // BuyOrder: #{viewData.buyOrder}
           | // Amount: #{viewData.amount}
           | 
-          | const refundRequest = await (new Oneclick.MallTransaction()).refund(
+          | const options = new Options(IntegrationCommerceCodes.ONECLICK_MALL_DEFERRED, IntegrationApiKeys.WEBPAY, Environment.Integration);
+          | const refundRequest = await (new Oneclick.MallTransaction(options)).refund(
           |   buyOrder,
           |   childCommerceCode,
           |   childBuyOrder,

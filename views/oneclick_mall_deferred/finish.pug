@@ -17,7 +17,8 @@ block step
         code.js
           | // En el caso de Express
           | let token = request.body.TBK_TOKEN;
-          | const commitResponse = await (new Oneclick.Inscription()).finish(token);
+          | const options = new Options(IntegrationCommerceCodes.ONECLICK_MALL_DEFERRED, IntegrationApiKeys.WEBPAY, Environment.Integration);
+          | const commitResponse = await (new Oneclick.Inscription(options)).finish(token);
     .col.m4
       h5 Petición
       p 

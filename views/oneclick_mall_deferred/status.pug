@@ -12,7 +12,8 @@ block step
         code.z-depth-2.js
           | // Token: #{viewData.token}
           |
-          | const statusResponse = await (new Oneclick.MallTransaction()).status(token);
+          | const options = new Options(IntegrationCommerceCodes.ONECLICK_MALL_DEFERRED, IntegrationApiKeys.WEBPAY, Environment.Integration);
+          | const statusResponse = await (new Oneclick.MallTransaction(options)).status(token);
   .row
     .col.m8
       pre.z-depth-2

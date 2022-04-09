@@ -1,7 +1,7 @@
 const Oneclick = require("transbank-sdk").Oneclick;
 const TransactionDetail = require("transbank-sdk").TransactionDetail;
+const { Options, IntegrationApiKeys, Environment, IntegrationCommerceCodes } = require("transbank-sdk");
 const asyncHandler = require("../utils/async_handler");
-const IntegrationCommerceCodes = require("transbank-sdk").IntegrationCommerceCodes;
 
 
 exports.start = asyncHandler(async (request, response, next) => {
@@ -13,8 +13,8 @@ exports.start = asyncHandler(async (request, response, next) => {
     "://" +
     request.get("host") +
     "/oneclick_mall_deferred/finish";
-
-  const startResponse = await (new Oneclick.MallInscription()).start(
+  const options = new Options(IntegrationCommerceCodes.ONECLICK_MALL_DEFERRED, IntegrationApiKeys.WEBPAY, Environment.Integration);
+  const startResponse = await (new Oneclick.MallInscription(options)).start(
     userName,
     email,
     responseUrl
@@ -47,7 +47,8 @@ exports.finish = asyncHandler(async (request, response, next) => {
   let tbkIdSesion = params.TBK_ID_SESION;
 
   if (tbkOrdenCompra == null){
-    const finishResponse = await (new Oneclick.MallInscription()).finish(token);
+    const options = new Options(IntegrationCommerceCodes.ONECLICK_MALL_DEFERRED, IntegrationApiKeys.WEBPAY, Environment.Integration);
+    const finishResponse = await (new Oneclick.MallInscription(options)).finish(token);
     let viewData = {
       token,
       finishResponse,
@@ -81,7 +82,8 @@ exports.finish = asyncHandler(async (request, response, next) => {
 exports.delete = asyncHandler(async (request, response, next) => {
   const username = request.body.username;
   const tbkUser = request.body.tbk_user;
-  await (new Oneclick.MallInscription()).delete(tbkUser, username);
+  const options = new Options(IntegrationCommerceCodes.ONECLICK_MALL_DEFERRED, IntegrationApiKeys.WEBPAY, Environment.Integration);
+  await (new Oneclick.MallInscription(options)).delete(tbkUser, username);
   
   let viewData = {
     username,
@@ -109,8 +111,8 @@ exports.authorize = asyncHandler(async (request, response, next) => {
   const details = [
     new TransactionDetail(amount, childCommerceCode, childBuyOrder),
   ];
-
-  const authorizeResponse = await (new Oneclick.MallTransaction()).authorize(
+  const options = new Options(IntegrationCommerceCodes.ONECLICK_MALL_DEFERRED, IntegrationApiKeys.WEBPAY, Environment.Integration);
+  const authorizeResponse = await (new Oneclick.MallTransaction(options)).authorize(
     username,
     tbkUser,
     buyOrder,
@@ -146,8 +148,8 @@ exports.capture = asyncHandler(async (request, response, next) => {
   console.log("================================================================================");
   console.log(request);
   console.log("================================================================================");
-
-  const captureResponse = await (new Oneclick.MallTransaction()).capture(
+  const options = new Options(IntegrationCommerceCodes.ONECLICK_MALL_DEFERRED, IntegrationApiKeys.WEBPAY, Environment.Integration);
+  const captureResponse = await (new Oneclick.MallTransaction(options)).capture(
     commerceCode,
     childBuyOrder,
     authorizationCode,
@@ -174,8 +176,8 @@ exports.capture = asyncHandler(async (request, response, next) => {
 
 exports.status = asyncHandler(async (request, response, next) => {
   const buyOrder = request.body.buy_order;
-
-  const statusResponse = await (new Oneclick.MallTransaction()).status(
+  const options = new Options(IntegrationCommerceCodes.ONECLICK_MALL_DEFERRED, IntegrationApiKeys.WEBPAY, Environment.Integration);
+  const statusResponse = await (new Oneclick.MallTransaction(options)).status(
     buyOrder
   );
 
@@ -197,8 +199,8 @@ exports.refund = asyncHandler(async (request, response, next) => {
   const childCommerceCode = request.body.commerce_code;
   const childBuyOrder = request.body.child_buy_order;
   const amount = request.body.amount;
-
-  const refundResponse = await (new Oneclick.MallTransaction()).refund(
+  const options = new Options(IntegrationCommerceCodes.ONECLICK_MALL_DEFERRED, IntegrationApiKeys.WEBPAY, Environment.Integration);
+  const refundResponse = await (new Oneclick.MallTransaction(options)).refund(
     buyOrder,
     childCommerceCode,
     childBuyOrder,
