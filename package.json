@@ -12,9 +12,9 @@
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
-    "pug": "2.0.0-beta11",
+    "pug": "^3.0.2",
     "serve-favicon": "^2.5.0",
-    "transbank-sdk": "3.0.0"
+    "transbank-sdk": "3.0.1"
   },
   "devDependencies": {
     "dotenv": "^8.2.0"

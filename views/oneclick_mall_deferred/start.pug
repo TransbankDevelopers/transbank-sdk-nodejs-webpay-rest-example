@@ -8,14 +8,15 @@ block step
     .col.m7
       pre.z-depth-2
         code.js
-          | const Oneclick = require('transbank-sdk').Oneclick; // CommonJS
+          | const Oneclick = require('transbank-sdk').Oneclick; // CommonJS 
           | import { Oneclick } from 'transbank-sdk'; // ES6 Modules
+          | const { Options, IntegrationApiKeys, Environment, IntegrationCommerceCodes } = require("transbank-sdk"); // CommonJS 
           |
           | // Es necesario ejecutar dentro de una función async para utilizar await
-          | const startResponse = await (new Oneclick.Inscription()).start(
-          |   buyOrder, 
-          |   sessionId, 
-          |   amount, 
+          | const options = new Options(IntegrationCommerceCodes.ONECLICK_MALL_DEFERRED, IntegrationApiKeys.WEBPAY, Environment.Integration);
+          | const startResponse = await (new Oneclick.MallInscription(options)).start(
+          |   userName, 
+          |   email, 
           |   responseUrl
           | );
   .row
@@ -32,8 +33,8 @@ block step
     .col.m10
       pre.z-depth-2
         code.html
-          | #{'<form action="' + viewData.startResponse.token + '" method="POST">'}
-          | #{'  <input type="hidden" name="token_ws" value="' + viewData.startResponse.url_webpay + '"/>'}
+          | #{'<form action="' + viewData.startResponse.url_webpay + '" method="POST">'}
+          | #{'  <input type="hidden" name="TBK_TOKEN" value="' + viewData.startResponse.token + '"/>'}
           br
           | #{'   <input type="submit" value="Inscribir"/>'}
           br
