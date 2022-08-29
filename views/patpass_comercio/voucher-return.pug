@@ -1,0 +1,18 @@
+extends template
+
+block actions
+  .row
+    .col.m12
+      h5 Otras utilidades
+      p 
+        | Luego de realizar la inscripcion puedes visualizar el voucher.
+  .row
+    .card-panel
+        form(action=viewData.voucherUrl, method="POST", id="startForm")
+          p Formulario de redirección al voucher
+          br
+          .input-field
+            input(type="text", name="tokenComercio", value=viewData.token)
+            label.text-dard.text-lighten-2(for="tokenComercio") Token
+          .input-field.white-text
+            button.waves-effect.waves-light.btn.pink.white-text(type="submit") Voucher

@@ -1,0 +1,57 @@
+extends template
+
+block step
+  .row
+    .col.m5
+      h5 Petición
+      p Para comenzar debes importar <code>TransaccionCompleta</code> y luego crear una transacción
+    .col.m7
+      pre.z-depth-2
+        code.js
+          | const TransaccionCompleta = require('transbank-sdk').TransaccionCompleta; // ES5
+          | import { TransaccionCompleta } from 'transbank-sdk'; // ES6
+          |
+          | // Es necesario ejecutar dentro de una función async para utilizar await
+          | const createResponse = await (new TransaccionCompleta.Transaction()).create(
+          |   buyOrder, 
+          |   sessionId, 
+          |   amount, 
+          |   cvv,
+          |   cardNumber,
+          |   cardExpirationDate
+          | );
+  .row
+    .col.m8
+      pre.z-depth-2
+        code.json= JSON.stringify(viewData.createResponse, null, ' ')
+    .col.m4
+      h5 Respuesta
+      p Una vez creada la transacción, estos serán los datos de respuesta
+  .row
+    .col.m12
+      h4 Lo siguiente ...
+      p 
+        | Ahora que ya creamos la transacción tienes dos opciones, puedes hacer consultas de cuotas para pagar con ellas
+        | o puedes directamente confirmar la transacción
+  .row
+    form.col.m12#confirmForm(action="/transaccion_completa_deferred/commit", method="POST")
+      input(type="hidden", name="token", value=viewData.createResponse.token)
+      button.waves-effect.waves-light.btn.pink.white-text(type="submit") Confirmar
+  .row 
+    form#installmentsForm(action="/transaccion_completa_deferred/installments", method="POST")
+      .col.m6
+        button.waves-effect.waves-light.btn.pink.white-text(type="submit") Hacer consulta de cuotas
+      .col.m6
+        input(type="hidden", name="token", value=viewData.createResponse.token)
+        .input-field 
+          label(for="installments") Nº de Cuotas
+          input(type="number", name="installments", placeholder="3", value="3")
+
+
+  .fixed-action-btn
+    a.btn-floating.btn-large.pink(onclick="submitFAB();")
+      i.large.material-icons navigate_next
+  script.
+    function submitFAB(){
+      document.getElementById('installmentsForm').submit();
+    }

@@ -2,7 +2,15 @@ const Oneclick = require("transbank-sdk").Oneclick;
 const TransactionDetail = require("transbank-sdk").TransactionDetail;
 const { Options, IntegrationApiKeys, Environment, IntegrationCommerceCodes } = require("transbank-sdk");
 const asyncHandler = require("../utils/async_handler");
+const DeferredConstants = require("../constants/deferred_constants");
 
+const getChildCommerceCode = () => {
+  if (process.env.OCM_CC && process.env.OCM_KEY) {
+    return process.env.OCMD_CC;
+  } else {
+    return IntegrationCommerceCodes.ONECLICK_MALL_CHILD1_DEFERRED;
+  }
+}
 
 exports.start = asyncHandler(async (request, response, next) => {
   let randomNumber = Math.floor(Math.random() * 100000) + 1;
@@ -106,28 +114,30 @@ exports.authorize = asyncHandler(async (request, response, next) => {
   const childBuyOrder = "O-" + Math.floor(Math.random() * 10000) + 1;
 
   let amount = Math.floor(Math.random() * 1000) + 1001;
-  let childCommerceCode = IntegrationCommerceCodes.ONECLICK_MALL_CHILD1_DEFERRED;
+  let childCommerceCode = getChildCommerceCode();
 
   const details = [
     new TransactionDetail(amount, childCommerceCode, childBuyOrder),
   ];
   const options = new Options(IntegrationCommerceCodes.ONECLICK_MALL_DEFERRED, IntegrationApiKeys.WEBPAY, Environment.Integration);
-  const authorizeResponse = await (new Oneclick.MallTransaction(options)).authorize(
+  const resp = await (new Oneclick.MallTransaction(options)).authorize(
     username,
     tbkUser,
     buyOrder,
     details
   );
+  const detail = resp.details[0];
 
   let viewData = {
     username,
     tbkUser,
-    buyOrder,
-    childCommerceCode,
-    amount,
-    childBuyOrder,
     details,
-    authorizeResponse,
+    resp,
+    commerceCode: detail.commerce_code,
+    buyOrder,
+    childBuyOrder,
+    authorizationCode: detail.authorization_code,
+    amount: detail.amount
   };
 
   response.render("oneclick_mall_deferred/authorize", {
@@ -141,7 +151,7 @@ exports.authorize = asyncHandler(async (request, response, next) => {
 exports.capture = asyncHandler(async (request, response, next) => {
   let buyOrder = request.body.buy_order;
   let childBuyOrder = request.body.child_buy_order;
-  let commerceCode = request.body.commerce_code;
+  let commerceCode = getChildCommerceCode();
   let authorizationCode = request.body.authorization_code;
   let captureAmount = request.body.capture_amount;
 
@@ -202,7 +212,7 @@ exports.refund = asyncHandler(async (request, response, next) => {
   const options = new Options(IntegrationCommerceCodes.ONECLICK_MALL_DEFERRED, IntegrationApiKeys.WEBPAY, Environment.Integration);
   const refundResponse = await (new Oneclick.MallTransaction(options)).refund(
     buyOrder,
-    childCommerceCode,
+    getChildCommerceCode(),
     childBuyOrder,
     amount
   );
@@ -218,6 +228,113 @@ exports.refund = asyncHandler(async (request, response, next) => {
     stepDescription:
       "Podrás pedir el reembolso del dinero al tarjeta habiente, dependiendo del monto " +
       "y el tiempo transacurrido será una Reversa, Anulación o Anulación parcial.",
+    viewData,
+  });
+});
+
+
+exports.increaseAmount = asyncHandler(async function (request, response, next) {
+  let amount = request.body.amount;
+  let buyOrder = request.body.buy_order;
+  let childBuyOrder = request.body.child_buy_order;
+  let authorizationCode = request.body.authorization_code;
+
+  const resp = await (new Oneclick.MallTransaction()).increaseAmount(
+    getChildCommerceCode(),
+    childBuyOrder,
+    authorizationCode,
+    amount
+  );
+
+  let viewData = {
+    resp,
+    buyOrder,
+    childBuyOrder,
+    authorizationCode,
+    amount : resp.total_amount
+  };
+
+  response.render("oneclick_mall_deferred/increase-amount", {
+    ...DeferredConstants.INCREASE_AMOUNT_STEP,
+    viewData,
+  });
+});
+
+exports.increaseAuthorizationDate = asyncHandler(async function (request, response, next) {
+  let buyOrder = request.body.buy_order;
+  let childBuyOrder = request.body.child_buy_order;
+  let authorizationCode = request.body.authorization_code;
+
+  const resp = await (new Oneclick.MallTransaction()).increaseAuthorizationDate(
+    getChildCommerceCode(),
+    childBuyOrder,
+    authorizationCode
+  );
+
+  let viewData = {
+    resp,
+    buyOrder,
+    childBuyOrder,
+    authorizationCode,
+    amount : resp.total_amount
+  };
+  
+  response.render("oneclick_mall_deferred/increase-date", {
+    ...DeferredConstants.INCREASE_AUTHORIZATION_DATE_STEP,
+    viewData,
+  });
+});
+
+exports.reversePreAuthorizedAmount = asyncHandler(async function (request, response, next) {
+  let amount = request.body.amount;
+  let buyOrder = request.body.buy_order;
+  let childBuyOrder = request.body.child_buy_order;
+  let authorizationCode = request.body.authorization_code;
+
+  const resp = await (new Oneclick.MallTransaction()).reversePreAuthorizedAmount(
+    getChildCommerceCode(),
+    childBuyOrder,
+    authorizationCode,
+    amount
+  );
+
+  let viewData = {
+    resp,
+    buyOrder,
+    childBuyOrder,
+    authorizationCode,
+    amount : resp.total_amount
+  };
+
+  response.render("oneclick_mall_deferred/reverse-amount", {
+    ...DeferredConstants.REVERSE_PRE_AUTHORIZATION_AMOUNT_STEP,
+    viewData,
+  });
+});
+
+
+exports.deferredCaptureHistory = asyncHandler(async function (request, response, next) {
+  let amount = request.body.amount;
+  let buyOrder = request.body.buy_order;
+  let childBuyOrder = request.body.child_buy_order;
+  let authorizationCode = request.body.authorization_code;
+
+  const resp = await (new Oneclick.MallTransaction()).deferredCaptureHistory(
+    getChildCommerceCode(),
+    childBuyOrder,
+    authorizationCode
+  );
+
+  let viewData = {
+    resp,
+    buyOrder,
+    childBuyOrder,
+    authorizationCode,
+    amount
+  };
+
+  response.render("oneclick_mall_deferred/history", {
+    ...DeferredConstants.DEFERRED_cAPTURE_HISTORY_STEP,
     viewData,
   });
 });

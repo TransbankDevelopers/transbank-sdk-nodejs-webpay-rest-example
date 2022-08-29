@@ -1,5 +1,5 @@
 var router = require("express").Router();
-var transaccionCompletaMall = require("../controllers/transaccion_completa_mall");
+var controller = require("../controllers/transaccion_completa_mall");
 const TransaccionCompleta = require("transbank-sdk").TransaccionCompleta;
 
 router.use(function (req, res, next) {
@@ -14,11 +14,11 @@ router.use(function (req, res, next) {
   next();
 });
 
-router.get("/form", transaccionCompletaMall.form);
-router.post("/create", transaccionCompletaMall.create);
-router.post("/installments", transaccionCompletaMall.installments);
-router.post("/commit", transaccionCompletaMall.commit);
-router.post("/status", transaccionCompletaMall.status);
-router.post("/refund", transaccionCompletaMall.refund);
+router.get("/form", controller.form);
+router.post("/create", controller.create);
+router.post("/installments", controller.installments);
+router.post("/commit", controller.commit);
+router.post("/status", controller.status);
+router.post("/refund", controller.refund);
 
 module.exports = router;

@@ -14,7 +14,7 @@
     "morgan": "~1.9.1",
     "pug": "^3.0.2",
     "serve-favicon": "^2.5.0",
-    "transbank-sdk": "3.0.1"
+    "transbank-sdk": "4.0.0"
   },
   "devDependencies": {
     "dotenv": "^8.2.0"

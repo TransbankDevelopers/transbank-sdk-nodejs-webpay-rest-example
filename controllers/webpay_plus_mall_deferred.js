@@ -1,7 +1,16 @@
 const WebpayPlus = require("transbank-sdk").WebpayPlus;
 const TransactionDetail = require("transbank-sdk").TransactionDetail;
 const IntegrationCommerceCodes = require("transbank-sdk").IntegrationCommerceCodes;
+const DeferredConstants = require("../constants/deferred_constants");
 const asyncHandler = require("../utils/async_handler");
+
+const getChildCommerceCode = () => {
+  if (process.env.WPPMD_CC && process.env.WPPMD_KEY) {
+    return process.env.WPPMD_C_CC;
+  } else {
+    return IntegrationCommerceCodes.WEBPAY_PLUS_MALL_DEFERRED_CHILD1;
+  }
+}
 
 exports.create = asyncHandler(async function (request, response, next) {
   let buyOrder = "O-" + Math.floor(Math.random() * 10000) + 1;
@@ -78,10 +87,15 @@ exports.commit = asyncHandler(async function (request, response, next) {
   };
 
   if (token && !tbkToken) {//Flujo 1
-    const commitResponse = await (new WebpayPlus.MallTransaction()).commit(token);
+    const resp = await (new WebpayPlus.MallTransaction()).commit(token);
+    const detail = resp.details[0];
     viewData = {
       token,
-      commitResponse,
+      resp,
+      commerceCode: detail.commerce_code,
+      childBuyOrder: detail.buy_order,
+      authorizationCode: detail.authorization_code,
+      amount: detail.amount
     };
     step = "Confirmar Transacción Mall diferida";
     stepDescription = "En este paso tenemos que confirmar la transacción con el objetivo de avisar a " +
@@ -119,22 +133,24 @@ exports.commit = asyncHandler(async function (request, response, next) {
 exports.capture = asyncHandler(async function (request, response, next) {
   let token = request.body.token;
   let buyOrder = request.body.buy_order;
+  let childBuyOrder = request.body.child_buy_order;
   let commerceCode = request.body.commerce_code;
   let authorizationCode = request.body.authorization_code;
   let captureAmount = request.body.capture_amount;
 
-  const captureResponse = await (new WebpayPlus.MallTransaction()).capture(
+  const resp = await (new WebpayPlus.MallTransaction()).capture(
+    getChildCommerceCode(),
     token,
-    commerceCode,
-    buyOrder,
+    childBuyOrder,
     authorizationCode,
     captureAmount
   );
 
   let viewData = {
-    captureResponse,
+    resp,
     token,
     buyOrder,
+    childBuyOrder,
     authorizationCode,
     commerceCode,
     captureAmount,
@@ -172,12 +188,12 @@ exports.status = asyncHandler(async function (request, response, next) {
 exports.refund = asyncHandler(async function (request, response, next) {
   let { token, amount } = request.body;
   let buyOrder = request.body.buy_order;
-  let commerceCode = request.body.commerce_code;
+  let childBuyOrder = request.body.child_buy_order;
 
   const refundResponse = await (new WebpayPlus.MallTransaction()).refund(
     token,
-    buyOrder,
-    commerceCode,
+    childBuyOrder,
+    getChildCommerceCode(),
     amount
   );
 
@@ -195,3 +211,111 @@ exports.refund = asyncHandler(async function (request, response, next) {
     viewData,
   });
 });
+
+
+exports.increaseAmount = asyncHandler(async function (request, response, next) {
+  let { token, amount } = request.body;
+  let childBuyOrder = request.body.child_buy_order;
+  let authorizationCode = request.body.authorization_code;
+
+  const resp = await (new WebpayPlus.MallTransaction()).increaseAmount(
+    token,
+    getChildCommerceCode(),
+    childBuyOrder,
+    authorizationCode,
+    amount
+  );
+
+  let viewData = {
+    resp,
+    token,
+    childBuyOrder,
+    authorizationCode,
+    amount : resp.total_amount
+  };
+
+  response.render("webpay_plus_mall_deferred/increase-amount", {
+    ...DeferredConstants.INCREASE_AMOUNT_STEP,
+    viewData,
+  });
+});
+
+exports.increaseAuthorizationDate = asyncHandler(async function (request, response, next) {
+  let { token } = request.body;
+  let childBuyOrder = request.body.child_buy_order;
+  let authorizationCode = request.body.authorization_code;
+
+  const resp = await (new WebpayPlus.MallTransaction()).increaseAuthorizationDate(
+    token,
+    getChildCommerceCode(),
+    childBuyOrder,
+    authorizationCode
+  );
+
+  let viewData = {
+    resp,
+    token,
+    childBuyOrder,
+    authorizationCode,
+    amount : resp.total_amount
+  };
+  
+  response.render("webpay_plus_mall_deferred/increase-date", {
+    ...DeferredConstants.INCREASE_AUTHORIZATION_DATE_STEP,
+    viewData,
+  });
+});
+
+exports.reversePreAuthorizedAmount = asyncHandler(async function (request, response, next) {
+  let { token, amount } = request.body;
+  let childBuyOrder = request.body.child_buy_order;
+  let authorizationCode = request.body.authorization_code;
+
+  const resp = await (new WebpayPlus.MallTransaction()).reversePreAuthorizedAmount(
+    token,
+    getChildCommerceCode(),
+    childBuyOrder,
+    authorizationCode,
+    amount
+  );
+
+  let viewData = {
+    resp,
+    token,
+    childBuyOrder,
+    authorizationCode,
+    amount : resp.total_amount
+  };
+
+  response.render("webpay_plus_mall_deferred/reverse-amount", {
+    ...DeferredConstants.REVERSE_PRE_AUTHORIZATION_AMOUNT_STEP,
+    viewData,
+  });
+});
+
+
+exports.deferredCaptureHistory = asyncHandler(async function (request, response, next) {
+  let { token, amount } = request.body;
+  let childBuyOrder = request.body.child_buy_order;
+  let authorizationCode = request.body.authorization_code;
+
+  const resp = await (new WebpayPlus.MallTransaction()).deferredCaptureHistory(
+    token,
+    getChildCommerceCode(),
+    childBuyOrder
+  );
+
+  let viewData = {
+    resp,
+    token,
+    childBuyOrder,
+    authorizationCode,
+    amount
+  };
+
+  response.render("webpay_plus_mall_deferred/history", {
+    ...DeferredConstants.DEFERRED_cAPTURE_HISTORY_STEP,
+    viewData,
+  });
+});
+

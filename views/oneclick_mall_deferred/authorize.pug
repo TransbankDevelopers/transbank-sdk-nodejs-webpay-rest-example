@@ -17,7 +17,7 @@ block step
           |
           | // Es necesario ejecutar dentro de una función async para utilizar await
           | const options = new Options(IntegrationCommerceCodes.ONECLICK_MALL_DEFERRED, IntegrationApiKeys.WEBPAY, Environment.Integration);
-          | const authorizeResponse = await (new Oneclick.MallTransaction(options)).authorize(
+          | const resp = await (new Oneclick.MallTransaction(options)).authorize(
           |   username, 
           |   tbkUser, 
           |   details
@@ -25,7 +25,7 @@ block step
   .row
     .col.m8
       pre.z-depth-2
-        code.json= JSON.stringify(viewData.authorizeResponse, null, ' ')
+        code.json= JSON.stringify(viewData.resp, null, ' ')
     .col.m4
       h5 Respuesta
       p Una vez autorizada la transacción, estos serán los datos de respuesta
@@ -43,26 +43,5 @@ block actions
         | Ya puedes mostrar al usuario una página de éxito de la transacción.
         | Debes tener en cuenta que la transacción aun no ha sido capturada solo ha 
         | sido retenido el saldo en la tarjeta del Tarjetahabiente
-  .row
-    form(action="/oneclick_mall_deferred/capture", method="post", id="captureForm").valign-wrapper
-      .col.m4
-        button(type="submit").waves-effect.waves-light.btn.pink.white-text.valign Capturar
-      .col.m8
-        input(type="hidden", name="buy_order", value=viewData.authorizeResponse.buy_order)
-        input(type="hidden", name="child_buy_order", value=viewData.authorizeResponse.details[0].buy_order)
-        input(type="hidden", name="authorization_code", value=viewData.authorizeResponse.details[0].authorization_code)
-        input(type="hidden", name="commerce_code", value=viewData.authorizeResponse.details[0].commerce_code)
-        .input-field
-          input(type="text", name="capture_amount", value=viewData.authorizeResponse.details[0].amount)
-          label(for="capture_amount") Monto a capturar
-  
-  .fixed-action-btn
-    a.btn-floating.btn-large.pink(onclick="submitFAB();")
-      i.large.material-icons navigate_next
-  script.
-    function submitFAB(){
-      document.getElementById('captureForm').submit();
-    }
 
-
-
+  include ../deferred/deferred-options.pug

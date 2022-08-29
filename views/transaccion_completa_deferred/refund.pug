@@ -1,0 +1,29 @@
+extends template
+
+block step
+  .row
+    .col.m4
+      h5 Petición
+      p
+        | Necesitas el token de la transacción y el monto que quieres reversar, si anulas el 
+        | monto total puede ser una Reversa o Anulación dependiendo de ciertas condiciones
+        | o una Anulación parcial si el monto es menor al total. <br>
+        | No es posible hacer ni Anulaciones ni Anulaciones parciales en tarjetas que 
+        | no sean de crédito.
+        | Tampoco es posible realizar reembolsos de compras en cuotas.
+    .col.m8
+      pre
+        code.z-depth-2.js
+          | // Token: #{viewData.token}
+          | // Amount: #{viewData.amount}
+          | 
+          | const refundRequest = await (new TransaccionCompleta.Transaction()).refund(token, amount);
+
+  .row
+    .col.m8
+      pre.z-depth-2
+        code.json= JSON.stringify(viewData.refundResponse, null, ' ')
+    .col.m4
+      h5 Respuesta
+      p
+        | Transbank contestará con el resultado de la reversa o anulación.

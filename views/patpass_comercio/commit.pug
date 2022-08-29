@@ -1,0 +1,64 @@
+extends template
+
+block step
+  .row
+    .col.m4
+      h5 Datos recibidos
+      p Luego de que se termina el flujo en el formulario de inscripción recibirás un POST con lo siguiente
+    .col.m8
+      pre.z-depth-2
+        code.json
+          | {
+          |   'J_TOKEN': '#{viewData.token}'
+          | }
+  .row
+    .col.m8
+      pre.z-depth-2
+        code.js
+          | // En el caso de Express
+          | let token = request.body.J_TOKEN;
+          | const resp = await (new PatpassComercio.Inscription()).status(token);
+    .col.m4
+      h5 Petición
+      p 
+        | Usaras el token recibido para confirmar la inscripción usando 
+        | nuevamente <code>PatpassComercio</code>
+  .row
+    .col.m4
+      h5 Respuesta
+      p 
+        | Transbank contestará con lo siguiente.
+        | Debes guardar esta información, lo <strong>único</strong> que debes validar es 
+        | que el atributo <code>authorized</code> sea igual a true.
+    .col.m8
+      pre.z-depth-2
+        code.json= JSON.stringify(viewData.resp, null, ' ')
+  
+block actions
+  .row
+    .col.m12
+      h5 Otras utilidades
+      p 
+        | Luego de realizar la inscripcion puedes visualizar el voucher.
+  .row
+    .col.m2
+      p Puedes utilizar estos datos para crear un formulario para redireccionar al voucher
+    .col.m10
+      pre.z-depth-2
+        code.html 
+          | #{'<form action="' + viewData.voucherUrl + '" method="POST">'}
+          | #{'  <input type="hidden" name="tokenComercio" value="' + viewData.token + '"/>'}
+          br
+          | #{'   <input type="submit" value="Ver Voucher"/>'}
+          br
+          | #{'</form>'}
+  .row
+    .card-panel
+        form(action=viewData.voucherUrl, method="POST", id="startForm")
+          p Formulario de redirección al voucher
+          br
+          .input-field
+            input(type="text", name="tokenComercio", value=viewData.token)
+            label.text-dard.text-lighten-2(for="tokenComercio") Token
+          .input-field.white-text
+            button.waves-effect.waves-light.btn.pink.white-text(type="submit") Ver Voucher

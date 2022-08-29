@@ -14,6 +14,10 @@ var oneclickMallRouter = require("./routes/oneclick_mall");
 var oneclickMallDeferredRouter = require("./routes/oneclick_mall_deferred");
 var transaccionCompletaRouter = require("./routes/transaccion_completa");
 var transaccionCompletaMallRouter = require("./routes/transaccion_completa_mall");
+var transaccionCompletaDeferredRouter = require("./routes/transaccion_completa_deferred");
+var transaccionCompletaMallDeferredRouter = require("./routes/transaccion_completa_mall_deferred");
+var patpassComercioRouter = require("./routes/patpass_comercio");
+
 
 var app = express();
 if (app.settings.env == "development") {
@@ -40,6 +44,9 @@ app.use("/oneclick_mall", oneclickMallRouter);
 app.use("/oneclick_mall_deferred", oneclickMallDeferredRouter);
 app.use("/transaccion_completa", transaccionCompletaRouter);
 app.use("/transaccion_completa_mall", transaccionCompletaMallRouter);
+app.use("/transaccion_completa_deferred", transaccionCompletaDeferredRouter);
+app.use("/transaccion_completa_mall_deferred", transaccionCompletaMallDeferredRouter);
+app.use("/patpass_comercio", patpassComercioRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

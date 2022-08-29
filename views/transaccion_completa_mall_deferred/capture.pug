@@ -1,0 +1,60 @@
+extends ../webpay_plus/template
+
+block step
+  .row
+    .col.m8
+      pre.z-depth-2
+        code.js
+          | // En el caso de Express
+          | let token = request.body.token_ws;
+          | const resp = await (new TransaccionCompleta.MallTransaction()).capture(
+          |   token,
+          |   childCommerceCode,
+          |   childBuyOrder,
+          |   authorizationCode,
+          |   captureAmount
+          | );
+    .col.m4
+      h5 Petición
+      p 
+        | Para capturar una transacción necesitaremos el código de comercio de la tienda hija, Token, Orden de compra, Código de 
+        | autorización y monto a capturar. Se hace de la siguiente manera.
+  .row
+    .col.m4
+      h5 Respuesta
+      p 
+        | Transbank contestará con lo siguiente.
+        | Debes guardar esta información, lo <strong>único</strong> que debes validar es 
+        | que <code>response_code</code> sea igual a cero.
+    .col.m8
+      pre.z-depth-2
+        code.json= JSON.stringify(viewData.resp, null, ' ')
+
+block actions
+  .row
+    .col.m12
+      h5 Otras utilidades
+      p 
+        | Luego de capturada la transacción puedes Reembolsar (reversar o anular) el 
+        | pago dependiendo de ciertas condiciones comerciales. También puedes consultar el estado
+        | de la transacción hasta 7 días después de realizada.
+  .row
+    .col.m6
+      form(action="/transaccion_completa_mall_deferred/status", method="post")
+        input(type="hidden" value=viewData.token, name="token")
+        button(type="submit").btn.waves-effect.waves-light.pink.white-text Consultar Estado
+    .col.m6
+      form(action="/transaccion_completa_mall_deferred/refund", method="post")
+        button.btn.waves-effect.waves-light.pink.white-text(type="submit") Reembolsar
+        input(type="hidden" value=viewData.token, name="token")
+        .input-field(style="margin-top: 25px")
+          input(type="number", name="child_commerce_code", value=viewData.commerceCode)
+          label(for="child_commerce_code") Código de comercio:
+        .input-field(style="margin-top: 25px")
+          input(type="text", name="child_buy_order", value=viewData.childBuyOrder)
+          label(for="child_buy_order") Orden de Compra:
+        .input-field(style="margin-top: 25px")
+          input(type="number", name="amount", value=viewData.amount)
+          label(for="amount") Monto a reembolsar:
+
+

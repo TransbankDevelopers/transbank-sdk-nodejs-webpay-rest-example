@@ -1,0 +1,29 @@
+extends ../webpay_plus/template
+block step
+  .row
+    .col.m4
+      h5 Petición
+      p 
+        | Para visualizar el historial de transacciones necesitaremos el Token. 
+        | Se hace de la siguiente manera.
+    .col.m8
+      pre.z-depth-2
+        code.js
+          | const resp = await (new TransaccionCompleta.MallTransaction()).deferredCaptureHistory(
+          |   token,
+          |   childCommerceCode,
+          |   childBuyOrder,
+          |   authorizationCode
+          | );
+  .row
+    .col.m8
+      pre.z-depth-2
+        code.json= JSON.stringify(viewData.resp, null, ' ')
+    .col.m4
+      h5 Respuesta
+      p 
+        | Transbank contestará con lo siguiente.
+
+  include ../deferred/deferred-options.pug
+
+
