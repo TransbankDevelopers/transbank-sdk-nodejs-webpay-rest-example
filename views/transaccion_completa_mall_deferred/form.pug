@@ -1,0 +1,53 @@
+extends template 
+
+block step 
+  .row 
+    .col.m5 
+      h5 Formulario de pago 
+      p 
+        | Para comenzar debes obtener los datos de la tarjeta sobre la cual
+        | se desea generar una transacción.
+    .col.m7
+      .card
+        form#card(action="/transaccion_completa_mall_deferred/create", method="POST")
+          .card-content
+            .row
+              .col.m12 
+                .card-wrapper
+                input(type="hidden", name="name" value="Ariel Cárdenas")
+            .row
+              .col.m12.input-field
+                input(type="text", name="number" value="4051885600446623")
+                label(for="number") Número de tarjeta
+            .row
+              .col.m3.input-field
+                input(type="text", name="expiry_month", placeholder="MM" value="11")
+                label(for="expiry") Mes
+              .col.m3.input-field
+                input(type="text", name="expiry_year", placeholder="YY" value="30")
+                label(for="expiry") Año
+              .col.m6.input-field
+                input(type="text", name="cvc" value="123")
+                label(for="cvc") CVV 
+            .row 
+              .col.m12 
+                button.btn.waves-effect.waves-light.pink.white-text(type="submit") Pagar
+  script(src="/javascripts/card.js").
+  script.
+    var card = new Card({
+      form: 'form#card',
+      container: '.card-wrapper',
+      messages: {
+        monthYear: 'mm/yy',
+      },
+      placeholders: {
+        name: 'Ariel Cárdenas'
+      },
+      formSelectors: {
+        expiryInput: 'input[name=expiry_month], input[name=expiry_year]', // optional — default input[name="expiry"]
+      },
+      debug: true
+    });
+
+            
+              

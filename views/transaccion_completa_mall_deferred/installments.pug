@@ -1,0 +1,54 @@
+extends template
+
+block step
+  .row
+    .col.m2
+      h5 Petición
+      p Para hacer la consulta de cuotas debemos enviar los siguientes datos.
+    .col.m10
+      pre.z-depth-2
+        code.js
+          | const TransaccionCompleta = require('transbank-sdk').TransaccionCompleta; // CommonJS
+          | const InstallmentDetal = require('transbank-sdk').InstallmentDetal; // CommonJS
+          | import { TransaccionCompleta, InstallmentDetail } from 'transbank-sdk'; // ES6 Modules
+          |
+          | let installmentDetails = [new InstallmentDetail(childCommerceCode, childBuyOrder, installmentsNumber)];
+          |
+          | // Es necesario ejecutar dentro de una función async para utilizar await
+          | const installmentsResponse = await (new TransaccionCompleta.MallTransaction()).installments(
+          |   token, 
+          |   installmentDetails
+          | );
+  .row
+    .col.m5
+      pre.z-depth-2
+        code.json= JSON.stringify(viewData.installmentsResponse, null, ' ')
+    .col.m7
+      h5 Respuesta
+      p Una hecha la consulta de cuotas, estos serán los datos de respuesta
+  .row 
+    .col.m12 
+      h4 Lo siguiente...
+  .row 
+    .col.m4 
+      h5 Confirmar transacción 
+      p Para confirmar una transacción debemos pasar los siguentes datos.
+    .col.m8 
+      .card-panel
+        form(action="/transaccion_completa_mall_deferred/commit", method="POST")
+          input(type="hidden", name="child_commerce_code", value=viewData.childCommerceCode)
+          input(type="hidden", name="child_buy_order", value=viewData.childBuyOrder)
+          .input-field
+            input(name="token", value=viewData.token, type="text")
+            label(for="token") Token
+          .input-field 
+            input(name="id_query_installments", value=viewData.installmentsResponse[0].id_query_installments, type="text")
+            label(for="id_query_instalments") ID de consulta de cuotas (Opcional)
+          .input-field 
+            input(name="deferred_period_index", type="text")
+            label(for="deferred_period_index") Indice de periodo diferido (Opcional)
+          .input-field 
+            input(name="grace_period", type="text")
+            label(for="grace_period") Periodo de gracia (Opcional)
+          .input-field 
+            button.waves-effect.waves-light.btn.pink.white-text Confirmar Transacción

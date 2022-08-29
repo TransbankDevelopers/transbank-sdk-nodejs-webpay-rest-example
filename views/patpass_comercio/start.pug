@@ -1,0 +1,147 @@
+extends template
+
+block step
+  .row
+    .col.m5
+      h5 Petición
+      p Para comenzar debes importar <code>PatpassComercio</code> y luego comenzar una inscripción
+      p Tener en cuenta que actualmente el ambiente de integración no soporta direcciones locales (como localhost, 127.0.0.1, 192.168.*.*) en los atributos en los atributos 'url' y 'finalUrl'.
+    .col.m7
+      pre.z-depth-2
+        code.js
+          | const startResponse = await (new PatpassComercio.Inscription()).start(
+          |   userName, 
+          |   email, 
+          |   responseUrl
+          |   url, 
+          |   name, 
+          |   lastName, 
+          |   secondLastName, 
+          |   rut, 
+          |   serviceId, 
+          |   finalUrl, 
+          |   maxAmount, 
+          |   phone, 
+          |   cellPhone, 
+          |   patpassName, 
+          |   personEmail, 
+          |   commerceEmail, 
+          |   address, 
+          |   city
+          | );
+  .row
+    .col.m8
+      pre.z-depth-2
+        code.json= JSON.stringify(viewData.resp, null, ' ')
+    .col.m4
+      h5 Respuesta
+      p Una vez iniciada la inscripción, estos serán los datos de respuesta
+  .row
+    .col.m2
+      h5 Por último
+      p Debes utilizar estos datos para crear un formulario
+    .col.m10
+      pre.z-depth-2
+        code.html 
+          | #{'<form action="' + viewData.url + '" method="POST">'}
+          | #{'  <input type="hidden" name="tokenComercio" value="' + viewData.token + '"/>'}
+          br
+          | #{'   <input type="submit" value="Inscribir"/>'}
+          br
+          | #{'</form>'}
+  .row
+    .col.m12
+      h4 Ejemplo
+  .row
+    .col.m6
+      h5 Iniciamos la inscripción
+      p Usando los siguientes datos
+      table
+        thead
+          tr
+            th Campo
+            th Valor
+        tbody
+          tr
+            td
+              strong Url de retorno luego de realizar la inscripción
+            td #{viewData.returnUrl}
+
+          tr
+            td
+              strong Nombre del Cliente
+            td #{viewData.name}
+          tr
+            td
+              strong Apellido del Cliente
+            td #{viewData.lastName}
+          tr
+            td
+              strong Segundo Apellido del Cliente
+            td #{viewData.secondLastName}
+          tr
+            td
+              strong Rut del Cliente
+            td #{viewData.rut}
+          tr
+            td
+              strong Id del Servicio  
+            td #{viewData.serviceId}
+          tr
+            td
+              strong Url de redirección luego de generar el voucher
+            td #{viewData.finalUrl}
+          tr
+            td
+              strong Monto máximo de pago
+            td #{viewData.maxAmount}
+          tr
+            td
+              strong Teléfono del contacto
+            td #{viewData.phone}
+          tr
+            td
+              strong Celular del contacto
+            td #{viewData.cellPhone}
+          tr
+            td
+              strong Nombre de la inscripción en Patpass
+            td #{viewData.patpassName}
+          tr
+            td
+              strong Correo del contacto
+            td #{viewData.personEmail}
+          tr
+            td
+              strong Correo del comercio
+            td #{viewData.commerceEmail}
+          tr
+            td
+              strong Dirección del contacto
+            td #{viewData.address}
+          tr
+            td
+              strong Ciudad del contacto
+            td #{viewData.city}
+    .col.m6
+      h5 Por último
+      p
+        | Con la respuesta del servicio creamos el formulario, para efectos del ejemplo 
+        | haremos el campo <code>tokenComercio</code> visible
+      .card-panel
+        form(action=viewData.url, method="POST", id="startForm")
+          p Formulario de redirección
+          br
+          .input-field
+            input(type="text", name="tokenComercio", value=viewData.token)
+            label.text-dard.text-lighten-2(for="tokenComercio") Token
+          .input-field.white-text
+            button.waves-effect.waves-light.btn.pink.white-text(type="submit") Inscribir
+
+  .fixed-action-btn
+    a.btn-floating.btn-large.pink(onclick="submitFAB();")
+      i.large.material-icons navigate_next
+  script.
+    function submitFAB(){
+      document.getElementById('startForm').submit();
+    }

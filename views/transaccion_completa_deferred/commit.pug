@@ -1,0 +1,43 @@
+extends ../webpay_plus/template
+
+block step
+  .row
+    .col.m4
+      h5 Petición
+      p
+        | Para poder confirmar la transacción debes enviar el token, y en caso de pago en cuotas
+        | debes también enviar el ID de la consulta de couotas. En algunos casos tambien debes enviar 
+        | el Indice del periodo diferido y un boolean indicando si se tomará el período de gracia.
+    .col.m8
+      pre.z-depth-2
+        code.js
+          | const TransaccionCompleta = require('transbank-sdk').TransaccionCompleta; // CommonJS
+          | import { TransaccionCompleta } from 'transbank-sdk'; // ES6 Modules
+          |
+          | const resp = await (new TransaccionCompleta.Transaction()).commit(
+          |   token,
+          |   idQueryInstallments
+          | );
+          |
+  .row
+    .col.m8
+      pre.z-depth-2
+        code.json= JSON.stringify(viewData.resp, null, ' ')
+    .col.m4
+      h5 Respuesta
+      p Una vez confirmada la transacción recibirás la siguiente información.
+  .row
+    .col.m12
+      h4 Listo !
+      p Ya puedes mostrar al usuario una página de éxito de la transacción.
+
+  .row
+    .col.m12
+      h4 Casi listo !
+      p 
+        | Ya puedes mostrar al usuario una página de éxito de la transacción.
+        | Debes tener en cuenta que la transacción aun no ha sido capturada solo ha 
+        | sido retenido el saldo en la tarjeta del Tarjetahabiente.
+        | Luego de confirmar la transacción podemos: 
+
+  include ../deferred/deferred-options.pug  

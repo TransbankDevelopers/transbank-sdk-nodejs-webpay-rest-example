@@ -1,0 +1,32 @@
+extends ../webpay_plus/template
+block step
+  .row
+    .col.m4
+      h5 Petición
+      p 
+        | Para reversar un monto pre-autorizado de una transacción necesitaremos el Token, Orden de compra, Código de 
+        | autorización y monto a incrementar. Se hace de la siguiente manera.
+    .col.m8
+      pre.z-depth-2
+        code.js
+          | const resp = await (new TransaccionCompleta.Transaction()).reversePreAuthorizedAmount(
+          |   token,
+          |   childCommerceCode,
+          |   buyOrder,
+          |   authorizationCode,
+          |   amount
+          | );
+  .row
+    .col.m8
+      pre.z-depth-2
+        code.json= JSON.stringify(viewData.resp, null, ' ')
+    .col.m4
+      h5 Respuesta
+      p 
+        | Transbank contestará con lo siguiente.
+        | Debes guardar esta información, lo <strong>único</strong> que debes validar es 
+        | que <code>response_code</code> sea igual a cero.
+
+  include ../deferred/deferred-options.pug
+
+

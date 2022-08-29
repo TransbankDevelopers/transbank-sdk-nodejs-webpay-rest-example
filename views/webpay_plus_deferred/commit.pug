@@ -32,7 +32,7 @@ block step
         | que <code>response_code</code> sea igual a cero.
     .col.m8
       pre.z-depth-2
-        code.json= JSON.stringify(viewData.commitResponse, null, ' ')
+        code.json= JSON.stringify(viewData.resp, null, ' ')
 
   .row
     .col.m12
@@ -40,23 +40,7 @@ block step
       p 
         | Ya puedes mostrar al usuario una página de éxito de la transacción.
         | Debes tener en cuenta que la transacción aun no ha sido capturada solo ha 
-        | sido retenido el saldo en la tarjeta del Tarjetahabiente
-  .row
-    form(action="/webpay_plus_deferred/capture", method="post", id="captureForm").valign-wrapper
-      .col.m4
-        button(type="submit").waves-effect.waves-light.btn.pink.white-text.valign Capturar
-      .col.m8
-        input(type="hidden", name="token", value=viewData.token)
-        input(type="hidden", name="buy_order", value=viewData.commitResponse.buy_order)
-        input(type="hidden", name="authorization_code", value=viewData.commitResponse.authorization_code)
-        .input-field
-          input(type="text", name="capture_amount", value=viewData.commitResponse.amount)
-          label(for="capture_amount") Monto a capturar
-  
-  .fixed-action-btn
-    a.btn-floating.btn-large.pink(onclick="submitFAB();")
-      i.large.material-icons navigate_next
-  script.
-    function submitFAB(){
-      document.getElementById('captureForm').submit();
-    }
+        | sido retenido el saldo en la tarjeta del Tarjetahabiente.
+        | Luego de confirmar la transacción podemos: 
+        
+  include ../deferred/deferred-options.pug

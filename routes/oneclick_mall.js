@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-var oneclickController = require("../controllers/oneclick_mall");
+var controller = require("../controllers/oneclick_mall");
 const Oneclick = require("transbank-sdk").Oneclick;
 
 router.use(function (req, res, next) {
@@ -12,12 +12,12 @@ router.use(function (req, res, next) {
   next();
 });
 
-router.get("/start", oneclickController.start);
-router.get("/finish", oneclickController.finish);
-router.post("/finish", oneclickController.finish);
-router.post("/delete", oneclickController.delete);
-router.post("/authorize", oneclickController.authorize);
-router.post("/status", oneclickController.status);
-router.post("/refund", oneclickController.refund);
+router.get("/start", controller.start);
+router.get("/finish", controller.finish);
+router.post("/finish", controller.finish);
+router.post("/delete", controller.delete);
+router.post("/authorize", controller.authorize);
+router.post("/status", controller.status);
+router.post("/refund", controller.refund);
 
 module.exports = router;

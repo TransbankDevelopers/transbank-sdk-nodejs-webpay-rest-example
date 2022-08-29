@@ -1,0 +1,26 @@
+extends template
+
+block step
+  .row
+    .col.m4
+      h5 Petición
+      p 
+        | Necesitas el token de la transacción de la cual quieres obtener el estado y con ello llamar 
+        | nuevamente a <code>TransaccionCompleta.Transaction</code>.
+    .col.m8.valign-wrapper
+      pre.valign
+        code.z-depth-2.js
+          | // Token: #{viewData.token}
+          |
+          | const statusResponse = await (new TransaccionCompleta.Transaction()).status(token);
+  .row
+    .col.m8
+      pre.z-depth-2
+        code.json= JSON.stringify(viewData.statusResponse, null, ' ')
+      
+    .col.m4
+      h5 Respuesta
+      p 
+        | Transbank contestará con lo siguiente.
+        | Si no lo hiciste ya, debes guardar esta información, lo <strong>único</strong> que 
+        | debes validar es que <code>response_code</code> sea igual a cero.
