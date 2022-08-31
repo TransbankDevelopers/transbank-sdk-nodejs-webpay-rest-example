@@ -64,13 +64,12 @@
   form(action="history", method="post", id="captureForm").valign-wrapper
     .col.m4
       button(type="submit").waves-effect.waves-light.btn.pink.white-text.valign Historial Captura Diferida
-    .col.m4
       input(type="hidden", name="token", value=viewData.token)
       input(type="hidden", name="buy_order", value=viewData.buyOrder)
       input(type="hidden", name="child_buy_order", value=viewData.childBuyOrder)
       input(type="hidden", name="authorization_code", value=viewData.authorizationCode)
       input(type="hidden", name="amount", value=viewData.amount)
-    .col.m4
+    .col.m8
       p
         | Retorna el historial de operaciones ejecutadas sobre una pre-autorización de captura diferida.
 
