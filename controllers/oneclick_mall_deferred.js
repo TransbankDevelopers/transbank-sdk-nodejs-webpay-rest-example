@@ -14,7 +14,7 @@ const getChildCommerceCode = () => {
 
 exports.start = asyncHandler(async (request, response, next) => {
   let randomNumber = Math.floor(Math.random() * 100000) + 1;
-  let userName = "U-" + randomNumber;
+  let userName = "User-" + randomNumber;
   let email = "user." + randomNumber + "@example.cl";
   let responseUrl =
     request.protocol +
