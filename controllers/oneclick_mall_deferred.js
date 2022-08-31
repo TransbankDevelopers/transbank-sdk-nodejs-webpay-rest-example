@@ -53,13 +53,16 @@ exports.finish = asyncHandler(async (request, response, next) => {
   let token = params.TBK_TOKEN;
   let tbkOrdenCompra = params.TBK_ORDEN_COMPRA;
   let tbkIdSesion = params.TBK_ID_SESION;
-
+  let amount = Math.floor(Math.random() * 1000) + 1001;
+  let installments = 0;
   if (tbkOrdenCompra == null){
     const options = new Options(IntegrationCommerceCodes.ONECLICK_MALL_DEFERRED, IntegrationApiKeys.WEBPAY, Environment.Integration);
     const finishResponse = await (new Oneclick.MallInscription(options)).finish(token);
     let viewData = {
       token,
       finishResponse,
+      amount,
+      installments
     };
 
     response.render("oneclick_mall_deferred/finish", {
@@ -112,12 +115,13 @@ exports.authorize = asyncHandler(async (request, response, next) => {
   const tbkUser = request.body.tbk_user;
   const buyOrder = "O-" + Math.floor(Math.random() * 10000) + 1;
   const childBuyOrder = "O-" + Math.floor(Math.random() * 10000) + 1;
+  const amount = request.body.amount;
+  const installmentsNumber = request.body.installments;
 
-  let amount = Math.floor(Math.random() * 1000) + 1001;
   let childCommerceCode = getChildCommerceCode();
 
   const details = [
-    new TransactionDetail(amount, childCommerceCode, childBuyOrder),
+    new TransactionDetail(amount, childCommerceCode, childBuyOrder, installmentsNumber),
   ];
   const options = new Options(IntegrationCommerceCodes.ONECLICK_MALL_DEFERRED, IntegrationApiKeys.WEBPAY, Environment.Integration);
   const resp = await (new Oneclick.MallTransaction(options)).authorize(
