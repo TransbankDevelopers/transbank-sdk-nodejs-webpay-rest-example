@@ -6,4 +6,5 @@ Ejecutar `npm install`
 
 ## Ejecución
 
-Levantar el pryecto usando `npm start`
+Levantar el proyecto usando `npm start`
+Levantar el proyecto en windows usando `npm run start-windows`
