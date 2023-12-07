@@ -18,6 +18,11 @@ exports.create = asyncHandler(async function (request, response, next) {
       childCommerceCode,
       "O-" + Math.floor(Math.random() * 10000) + 1
     ),
+    new TransactionDetail(
+      Math.floor(Math.random() * 100) + 101,
+      childCommerceCode,
+      "O-" + Math.floor(Math.random() * 10000) + 1
+    ),
   ];
   let returnUrl =
     request.protocol + "://" + request.get("host") + "/webpay_plus_mall/commit";
