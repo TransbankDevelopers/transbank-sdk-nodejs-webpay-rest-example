@@ -4,7 +4,9 @@ block step
   .row
     .col.m5
       h5 Petición
-      p Para comenzar debes importar <code>WebpayPlus</code> y luego crear una transacción mall
+      p Para comenzar debes importar <code>WebpayPlus</code> y luego crear una transacción mall.
+      p Puedes incluir una o más transacciones en una misma operación, para ello debes crear un arreglo de <code>TransactionDetail</code>. Si incluyes más de una transacción, el monto a cobrar será el total de los montos de las transacciones.
+      p Si quieres saber más sobre <code>TransactionDetail</code> puedes ver la documentación <a href="https://www.transbankdevelopers.cl/referencia/webpay#crear-una-transaccion-mall" target="_blank">aquí</a>.
 
     .col.m7
       pre.z-depth-2
@@ -17,6 +19,7 @@ block step
           |
           | let details = [
           |   new TransactionDetail(#{viewData.details[0].amount}, "#{viewData.details[0].commerceCode}", "#{viewData.details[0].buyOrder}"),
+          |   new TransactionDetail(#{viewData.details[1].amount}, "#{viewData.details[1].commerceCode}", "#{viewData.details[1].buyOrder}"),
           | ]
           | 
           | // Es necesario ejecutar dentro de una función async para utilizar await
@@ -79,6 +82,12 @@ block step
               |Monto: #{viewData.details[0].amount} <br>
               | Código de Comercio: #{viewData.details[0].commerceCode} <br>
               | Orden de Compra: #{viewData.details[0].buyOrder} <br>
+          tr
+            td
+            td
+              |Monto: #{viewData.details[1].amount} <br>
+              | Código de Comercio: #{viewData.details[1].commerceCode} <br>
+              | Orden de Compra: #{viewData.details[1].buyOrder} <br>
           tr
             td
               strong URL de retorno (returnUrl)
