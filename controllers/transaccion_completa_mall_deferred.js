@@ -4,7 +4,6 @@ const InstallmentDetail = require("transbank-sdk").InstallmentDetail;
 const CommitDetail = require("transbank-sdk").CommitDetail;
 const IntegrationCommerceCodes = require("transbank-sdk").IntegrationCommerceCodes;
 const { Options, IntegrationApiKeys, Environment } = require("transbank-sdk");
-const DeferredConstants = require("../constants/deferred_constants");
 const asyncHandler = require("../utils/async_handler");
 
 exports.form = asyncHandler(async function (request, response, next) {
@@ -212,113 +211,6 @@ exports.refund = asyncHandler(async function (request, response, next) {
     stepDescription:
       "Podrás pedir el reembolso del dinero al tarjeta habiente, dependiendo del monto " +
       "y el tiempo transacurrido será una Reversa, Anulación o Anulación parcial.",
-    viewData,
-  });
-});
-
-exports.increaseAmount = asyncHandler(async function (request, response, next) {
-  let { token, amount } = request.body;
-  let childBuyOrder = request.body.child_buy_order;
-  let authorizationCode = request.body.authorization_code;
-
-  const resp = await (getTx()).increaseAmount(
-    token,
-    getChildCommerceCode(),
-    childBuyOrder,
-    authorizationCode,
-    amount
-  );
-
-  let viewData = {
-    resp,
-    token,
-    childBuyOrder,
-    authorizationCode,
-    amount : resp.total_amount
-  };
-
-  response.render("transaccion_completa_mall_deferred/increase-amount", {
-    ...DeferredConstants.INCREASE_AMOUNT_STEP,
-    viewData,
-  });
-});
-
-exports.increaseAuthorizationDate = asyncHandler(async function (request, response, next) {
-  let { token } = request.body;
-  let childBuyOrder = request.body.child_buy_order;
-  let authorizationCode = request.body.authorization_code;
-
-  const resp = await (getTx()).increaseAuthorizationDate(
-    token,
-    getChildCommerceCode(),
-    childBuyOrder,
-    authorizationCode
-  );
-
-  let viewData = {
-    resp,
-    token,
-    childBuyOrder,
-    authorizationCode,
-    amount : resp.total_amount
-  };
-  
-  response.render("transaccion_completa_mall_deferred/increase-date", {
-    ...DeferredConstants.INCREASE_AUTHORIZATION_DATE_STEP,
-    viewData,
-  });
-});
-
-exports.reversePreAuthorizedAmount = asyncHandler(async function (request, response, next) {
-  let { token, amount } = request.body;
-  let childBuyOrder = request.body.child_buy_order;
-  let authorizationCode = request.body.authorization_code;
-
-  const resp = await (getTx()).reversePreAuthorizedAmount(
-    token,
-    getChildCommerceCode(),
-    childBuyOrder,
-    authorizationCode,
-    amount
-  );
-
-  let viewData = {
-    resp,
-    token,
-    childBuyOrder,
-    authorizationCode,
-    amount : resp.total_amount
-  };
-
-  response.render("transaccion_completa_mall_deferred/reverse-amount", {
-    ...DeferredConstants.REVERSE_PRE_AUTHORIZATION_AMOUNT_STEP,
-    viewData,
-  });
-});
-
-
-exports.deferredCaptureHistory = asyncHandler(async function (request, response, next) {
-  let { token, amount } = request.body;
-  let childBuyOrder = request.body.child_buy_order;
-  let authorizationCode = request.body.authorization_code;
-
-  const resp = await (getTx()).deferredCaptureHistory(
-    token,
-    getChildCommerceCode(),
-    childBuyOrder,
-    authorizationCode
-  );
-
-  let viewData = {
-    resp,
-    token,
-    childBuyOrder,
-    authorizationCode,
-    amount
-  };
-
-  response.render("transaccion_completa_mall_deferred/history", {
-    ...DeferredConstants.DEFERRED_cAPTURE_HISTORY_STEP,
     viewData,
   });
 });
