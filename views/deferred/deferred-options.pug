@@ -14,65 +14,6 @@
       P
         | Capturar la transacción para realmente capturar el dinero que habia sido previamente reservado.
 
-.row
-  form(action="increase_amount", method="post", id="captureForm").valign-wrapper
-    .col.m4
-      button(type="submit").waves-effect.waves-light.btn.pink.white-text.valign Aumentar Monto
-    .col.m4
-      input(type="hidden", name="token", value=viewData.token)
-      input(type="hidden", name="buy_order", value=viewData.buyOrder)
-      input(type="hidden", name="child_buy_order", value=viewData.childBuyOrder)
-      input(type="hidden", name="authorization_code", value=viewData.authorizationCode)
-      .input-field
-        input(type="text", name="amount", value=1000)
-        label(for="amount") Monto a aumentar
-    .col.m4
-      p
-        | Aumentar el monto previamente pre-autorizado (todas las veces que se necesite).
-
-.row
-  form(action="increase_date", method="post", id="captureForm").valign-wrapper
-    .col.m4
-      button(type="submit").waves-effect.waves-light.btn.pink.white-text.valign Aumentar Plazo
-      input(type="hidden", name="token", value=viewData.token)
-      input(type="hidden", name="buy_order", value=viewData.buyOrder)
-      input(type="hidden", name="child_buy_order", value=viewData.childBuyOrder)
-      input(type="hidden", name="authorization_code", value=viewData.authorizationCode)
-      input(type="hidden", name="amount", value=viewData.amount)
-    .col.m8
-      p
-        | Aumentar el plazo pre-autorizado (todas las veces que se necesite).
-        | El plazo de captura en VISA y MASTERCARD para los Rent-a-car y los hoteles son 30 días, y en AMEX solo 7 días (no tiene posiblidad de aumento de fecha y de monto).
-  
-.row
-  form(action="reverse_amount", method="post", id="captureForm").valign-wrapper
-    .col.m4
-      button(type="submit").waves-effect.waves-light.btn.pink.white-text.valign Reversar Monto
-    .col.m4
-      input(type="hidden", name="token", value=viewData.token)
-      input(type="hidden", name="buy_order", value=viewData.buyOrder)
-      input(type="hidden", name="child_buy_order", value=viewData.childBuyOrder)
-      input(type="hidden", name="authorization_code", value=viewData.authorizationCode)
-      .input-field
-        input(type="text", name="amount", value=viewData.amount)
-        label(for="amount") Monto a reversar
-    .col.m4
-      p
-        | Reversar el monto previamente pre-autorizado (todas las veces que se necesite).
-
-.row
-  form(action="history", method="post", id="captureForm").valign-wrapper
-    .col.m4
-      button(type="submit").waves-effect.waves-light.btn.pink.white-text.valign Historial Captura Diferida
-      input(type="hidden", name="token", value=viewData.token)
-      input(type="hidden", name="buy_order", value=viewData.buyOrder)
-      input(type="hidden", name="child_buy_order", value=viewData.childBuyOrder)
-      input(type="hidden", name="authorization_code", value=viewData.authorizationCode)
-      input(type="hidden", name="amount", value=viewData.amount)
-    .col.m8
-      p
-        | Retorna el historial de operaciones ejecutadas sobre una pre-autorización de captura diferida.
-
 .fixed-action-btn
   a.btn-floating.btn-large.pink(onclick="submitFAB();")
     i.large.material-icons navigate_next
