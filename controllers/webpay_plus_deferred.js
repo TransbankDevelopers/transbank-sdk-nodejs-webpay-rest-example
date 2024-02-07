@@ -1,5 +1,4 @@
 const WebpayPlus = require("transbank-sdk").WebpayPlus;
-const DeferredConstants = require("../constants/deferred_constants");
 const asyncHandler = require("../utils/async_handler");
 
 exports.create = asyncHandler(async function (request, response, next) {
@@ -177,108 +176,6 @@ exports.refund = asyncHandler(async function (request, response, next) {
     stepDescription:
       "Podrás pedir el reembolso del dinero al tarjeta habiente, dependiendo del monto " +
       "y el tiempo transacurrido será una Reversa, Anulación o Anulación parcial.",
-    viewData,
-  });
-});
-
-exports.increaseAmount = asyncHandler(async function (request, response, next) {
-  let token = request.body.token;
-  let buyOrder = request.body.buy_order;
-  let authorizationCode = request.body.authorization_code;
-  let amount = request.body.amount;
-
-  const resp = await (new WebpayPlus.Transaction()).increaseAmount(
-    token,
-    buyOrder,
-    authorizationCode,
-    amount
-  );
-
-  let viewData = {
-    resp,
-    token,
-    buyOrder,
-    authorizationCode,
-    amount : resp.total_amount
-  };
-
-  response.render("webpay_plus_deferred/increase-amount", {
-    ...DeferredConstants.INCREASE_AMOUNT_STEP,
-    viewData,
-  });
-});
-
-exports.increaseAuthorizationDate = asyncHandler(async function (request, response, next) {
-  let token = request.body.token;
-  let buyOrder = request.body.buy_order;
-  let authorizationCode = request.body.authorization_code;
-
-  const resp = await (new WebpayPlus.Transaction()).increaseAuthorizationDate(
-    token,
-    buyOrder,
-    authorizationCode
-  );
-
-  let viewData = {
-    resp,
-    token,
-    buyOrder,
-    authorizationCode,
-    amount : resp.total_amount
-  };
-
-  response.render("webpay_plus_deferred/increase-date", {
-    ...DeferredConstants.INCREASE_AUTHORIZATION_DATE_STEP,
-    viewData,
-  });
-});
-
-exports.reversePreAuthorizedAmount = asyncHandler(async function (request, response, next) {
-  let token = request.body.token;
-  let buyOrder = request.body.buy_order;
-  let authorizationCode = request.body.authorization_code;
-  let amount = request.body.amount;
-
-  const resp = await (new WebpayPlus.Transaction()).reversePreAuthorizedAmount(
-    token,
-    buyOrder,
-    authorizationCode,
-    amount
-  );
-
-  let viewData = {
-    resp,
-    token,
-    buyOrder,
-    authorizationCode,
-    amount : resp.total_amount
-  };
-
-  response.render("webpay_plus_deferred/reverse-amount", {
-    ...DeferredConstants.REVERSE_PRE_AUTHORIZATION_AMOUNT_STEP,
-    viewData,
-  });
-});
-
-
-exports.deferredCaptureHistory = asyncHandler(async function (request, response, next) {
-  let token = request.body.token;
-  let buyOrder = request.body.buy_order;
-  let authorizationCode = request.body.authorization_code;
-  let amount = request.body.amount;
-
-  const resp = await (new WebpayPlus.Transaction()).deferredCaptureHistory(token);
-
-  let viewData = {
-    resp,
-    token,
-    buyOrder,
-    authorizationCode,
-    amount
-  };
-
-  response.render("webpay_plus_deferred/history", {
-    ...DeferredConstants.DEFERRED_cAPTURE_HISTORY_STEP,
     viewData,
   });
 });
