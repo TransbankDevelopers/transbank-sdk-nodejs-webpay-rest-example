@@ -204,8 +204,6 @@ exports.bin = asyncHandler(async (request, response, next) => {
     };
 
     const resp = await axios.request(config);
-    console.log(JSON.stringify(resp.data));
-
     let viewData = {
       tbkUser,
       binResponse: resp.data
@@ -214,7 +212,7 @@ exports.bin = asyncHandler(async (request, response, next) => {
     response.render("oneclick_mall_bin/bin", {
       step: "Bin de la Tarjeta inscrita",
       stepDescription:
-        "En este paso mostaremos el bin de la tarjeta inscrita.",
+        "En este paso te mostraremos la información del bin de la tarjeta.",
       viewData,
     });
 
