@@ -1,4 +1,4 @@
-extends template
+extends template_back
 
 block step
   .row
@@ -44,11 +44,11 @@ block actions
         | de la transacción hasta 7 días después de realizada.
   .row
     .col.m6
-      form(action="/oneclick_mall/status", method="post")
+      form(action="/oneclick_mall_bin/status", method="post")
         input(type="hidden" value=viewData.buyOrder, name="buy_order")
         button(type="submit").btn.waves-effect.waves-light.pink.white-text Consultar Estado
     .col.m6
-      form(action="/oneclick_mall/refund", method="post")
+      form(action="/oneclick_mall_bin/refund", method="post")
         button.btn.waves-effect.waves-light.pink.white-text(type="submit") Reembolsar
         .input-field(style="margin-top: 25px")
           input(type="text", name="buy_order", value=viewData.buyOrder)
