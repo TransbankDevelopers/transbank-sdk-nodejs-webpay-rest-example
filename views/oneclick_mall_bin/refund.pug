@@ -1,0 +1,37 @@
+extends template
+
+block step
+  .row
+    .col.m4
+      h5 Petición
+      p
+        | Necesitas la orden de compra de la transacción, el monto que quieres reversar, el código de 
+        | comercio de la tienda hijo y el orden de compra del detalle de la transacción, 
+        | si anulas el 
+        | monto total puede ser una Reversa o Anulación dependiendo de ciertas condiciones
+        | o una Anulación parcial si el monto es menor al total. <br>
+        | No es posible hacer ni Anulaciones ni Anulaciones parciales en tarjetas que 
+        | no sean de crédito.
+        | Tampoco es posible realizar reembolsos de compras en cuotas.
+    .col.m8
+      pre
+        code.z-depth-2.js
+          | // BuyOrder: #{viewData.buyOrder}
+          | // Amount: #{viewData.amount}
+          | 
+          | const refundRequest = await (new Oneclick.MallTransaction()).refund(
+          |   buyOrder,
+          |   childCommerceCode,
+          |   childBuyOrder,
+          |  amount
+          | );
+
+  .row
+    .col.m8
+      pre.z-depth-2
+        code.json= JSON.stringify(viewData.refundResponse, null, ' ')
+    
+    .col.m4
+      h5 Respuesta
+      p
+        | Transbank contestará con el resultado de la reversa o anulación.

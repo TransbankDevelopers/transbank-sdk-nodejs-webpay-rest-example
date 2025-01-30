@@ -1,0 +1,25 @@
+extends template
+
+block step
+  .row
+    .col.m4
+      h5 Petición
+      p 
+        | Necesitas el <code>tbkUser</code>
+        | y llamar a <code>Oneclick.MallInscription</code>.
+    .col.m8.valign-wrapper
+      pre.valign
+        code.z-depth-2.js
+          |
+          | await (new Oneclick.MallInscription()).bin(tbkUser);
+          |
+  .row
+    .col.m8
+      pre.z-depth-2
+        code.json= JSON.stringify(viewData.binResponse, null, ' ')
+    .col.m4
+      h5 Respuesta
+      p 
+        | En caso de éxito Transbank responderá con los datos de la tarjeta.
+        | En el caso de error se responderá un código y un mensaje de error y el sdk retornara una excepción.   
+

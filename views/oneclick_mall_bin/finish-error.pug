@@ -1,0 +1,24 @@
+extends template
+
+block step
+  .row
+    .col.m4
+      h5 Datos recibidos
+      p Luego de que se termina el flujo en el formulario de inscripción recibirás un POST con lo siguiente
+    .col.m8
+      pre.z-depth-2
+        code.json
+          | {
+          |   'TBK_TOKEN': '#{viewData.token}',
+          |   'TBK_ORDEN_COMPRA': '#{viewData.tbkOrdenCompra}',
+          |   'TBK_ID_SESION': '#{viewData.tbkIdSesion}'
+          | }
+
+block actions
+  .row
+      .col.m12
+        h4 Se abandonó la inscripción!
+
+  script.
+    document.getElementById('username').value = window.localStorage.getItem('username');
+    document.getElementById('username-td').innerHTML = window.localStorage.getItem('username');

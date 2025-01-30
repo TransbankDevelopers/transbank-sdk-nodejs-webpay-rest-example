@@ -1,0 +1,66 @@
+extends template
+
+block step
+  .row
+    .col.m4
+      h5 Petición
+      p
+        | Una vez que ya tenemos el <code>username</code> y el <code>tbk_user</code> podemos autorizar
+        | transacciones en la tarjeta inscrita.
+    .col.m8
+      pre.z-depth-2
+        code.json
+          | const Oneclick = require('transbank-sdk').Oneclick; // CommonJS
+          | import { Oneclick } from 'transbank-sdk'; // ES6 Modules
+          |
+          | const details = [new TransactionDetail(amount, childCommerceCode, childBuyOrder)];
+          |
+          | // Es necesario ejecutar dentro de una función async para utilizar await
+          | const authorizeResponse = await (new Oneclick.MallTransaction()).authorize(
+          |   username, 
+          |   tbkUser, 
+          |   details
+          | );
+  .row
+    .col.m8
+      pre.z-depth-2
+        code.json= JSON.stringify(viewData.authorizeResponse, null, ' ')
+    .col.m4
+      h5 Respuesta
+      p Una vez autorizada la transacción, estos serán los datos de respuesta
+
+  .row
+    .col.m12
+      h4 Listo !
+      p Ya puedes mostrar al usuario una página de éxito de la transacción.
+
+block actions
+  .row
+    .col.m12
+      h5 Otras utilidades
+      p 
+        | Luego de autorizada la transacción puedes Reembolsar (reversar o anular) el 
+        | pago dependiendo de ciertas condiciones comerciales. También puedes consultar el estado
+        | de la transacción hasta 7 días después de realizada.
+  .row
+    .col.m6
+      form(action="/oneclick_mall/status", method="post")
+        input(type="hidden" value=viewData.buyOrder, name="buy_order")
+        button(type="submit").btn.waves-effect.waves-light.pink.white-text Consultar Estado
+    .col.m6
+      form(action="/oneclick_mall/refund", method="post")
+        button.btn.waves-effect.waves-light.pink.white-text(type="submit") Reembolsar
+        .input-field(style="margin-top: 25px")
+          input(type="text", name="buy_order", value=viewData.buyOrder)
+          label(for="buy_order") Orden de compra:
+        .input-field(style="margin-top: 25px")
+          input(type="text", name="child_buy_order", value=viewData.authorizeResponse.details[0].buy_order)
+          label(for="buy_order") Orden de compra tienda hija:
+        .input-field(style="margin-top: 25px")
+          input(type="text", name="commerce_code", value=viewData.authorizeResponse.details[0].commerce_code)
+          label(for="commerce_code") Código de Comercio:
+        .input-field(style="margin-top: 25px")
+          input(type="number", name="amount", value=viewData.authorizeResponse.details[0].amount)
+          label(for="amount") Monto a reembolsar:
+
+
