@@ -6,13 +6,20 @@ block step
       h5 Petición
       p 
         | Necesitas el <code>tbkUser</code>
-        | y llamar a <code>Oneclick.MallInscription</code>.
+        | y llamar a <code>Curl</code>.
     .col.m8.valign-wrapper
       pre.valign
         code.z-depth-2.js
           |
-          | await (new Oneclick.MallInscription()).bin(tbkUser);
+          | curl --location 'https://webpay3gint.transbank.cl/rswebpaytransaction/api/oneclick/v1.2/bin_info' \
+          |   --header 'Tbk-Api-Key-Id: 5970XXXXXXXX' \
+          |   --header 'Tbk-Api-Key-Secret: XXXXXXXXXXXXXXXXXXXXXXXXXX' \
+          |   --header 'Content-Type: application/json' \
+          |   --data '{
+          |      "tbk_user": "#{viewData.tbkUser}"
+          |     }'
           |
+
   .row
     .col.m8
       pre.z-depth-2
