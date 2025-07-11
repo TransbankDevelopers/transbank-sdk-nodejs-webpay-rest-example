@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require("axios");
 const asyncHandler = require("../utils/async_handler");
 const Oneclick = require("transbank-sdk").Oneclick;
 const TransactionDetail = require("transbank-sdk").TransactionDetail;
@@ -7,19 +7,26 @@ const Environment = require("transbank-sdk").Environment;
 const Options = require("transbank-sdk").Options;
 const ApiConstants = require("transbank-sdk").ApiConstants;
 
-const ONECLICK_MALL = '597060000001';
-const OPTION = new Options(ONECLICK_MALL, IntegrationApiKeys.WEBPAY, Environment.Integration);
-const ONECLICK_MALL_CHILD1 = '597060000002';
-const ONECLICK_MALL_CHILD2 = '597060000003';
+const ONECLICK_MALL = "597060000001";
+const OPTION = new Options(
+  ONECLICK_MALL,
+  "d8f06df8-39c7-4f01-8e74-b383c19ae836",
+  Environment.Integration
+);
+const ONECLICK_MALL_CHILD1 = "597060000002";
+const ONECLICK_MALL_CHILD2 = "597060000003";
 
 exports.start = asyncHandler(async (request, response, next) => {
   let randomNumber = Math.floor(Math.random() * 100000) + 1;
   let userName = "User-" + randomNumber;
   let email = "user." + randomNumber + "@example.cl";
   let responseUrl =
-    request.protocol + "://" + request.get("host") + "/oneclick_mall_bin/finish";
+    request.protocol +
+    "://" +
+    request.get("host") +
+    "/oneclick_mall_bin/finish";
 
-  const startResponse = await (new Oneclick.MallInscription(OPTION)).start(
+  const startResponse = await new Oneclick.MallInscription(OPTION).start(
     userName,
     email,
     responseUrl
@@ -41,19 +48,17 @@ exports.start = asyncHandler(async (request, response, next) => {
   });
 });
 
-
-
 exports.finish = asyncHandler(async (request, response, next) => {
-
-  let params = request.method === 'GET' ? request.query : request.body;
+  let params = request.method === "GET" ? request.query : request.body;
 
   let token = params.TBK_TOKEN;
   let tbkOrdenCompra = params.TBK_ORDEN_COMPRA;
   let tbkIdSesion = params.TBK_ID_SESION;
 
-
-  if (tbkOrdenCompra == null){
-    const finishResponse = await (new Oneclick.MallInscription(OPTION)).finish(token);
+  if (tbkOrdenCompra == null) {
+    const finishResponse = await new Oneclick.MallInscription(OPTION).finish(
+      token
+    );
     let viewData = {
       token,
       finishResponse,
@@ -66,12 +71,11 @@ exports.finish = asyncHandler(async (request, response, next) => {
         "cargos a la tarjeta que el tarjetahabiente inscriba.",
       viewData,
     });
-  }
-  else{
+  } else {
     let viewData = {
       token,
       tbkOrdenCompra,
-      tbkIdSesion
+      tbkIdSesion,
     };
 
     response.render("oneclick_mall_bin/finish-error", {
@@ -81,10 +85,7 @@ exports.finish = asyncHandler(async (request, response, next) => {
       viewData,
     });
   }
-
 });
-
-
 
 exports.authorize = asyncHandler(async (request, response, next) => {
   const username = request.body.username;
@@ -98,12 +99,9 @@ exports.authorize = asyncHandler(async (request, response, next) => {
     new TransactionDetail(amount, ONECLICK_MALL_CHILD1, childBuyOrder),
   ];
 
-  const authorizeResponse = await (new Oneclick.MallTransaction(OPTION)).authorize(
-    username,
-    tbkUser,
-    buyOrder,
-    details
-  );
+  const authorizeResponse = await new Oneclick.MallTransaction(
+    OPTION
+  ).authorize(username, tbkUser, buyOrder, details);
 
   let viewData = {
     username,
@@ -127,17 +125,16 @@ exports.authorize = asyncHandler(async (request, response, next) => {
 exports.delete = asyncHandler(async (request, response, next) => {
   const username = request.body.username;
   const tbkUser = request.body.tbk_user;
-  await (new Oneclick.MallInscription(OPTION)).delete(tbkUser, username);
-  
+  await new Oneclick.MallInscription(OPTION).delete(tbkUser, username);
+
   let viewData = {
     username,
-    tbkUser
+    tbkUser,
   };
 
   response.render("oneclick_mall_bin/delete", {
     step: "Eliminar inscripción",
-    stepDescription:
-      "En este paso eliminaremos la inscripción.",
+    stepDescription: "En este paso eliminaremos la inscripción.",
     viewData,
   });
 });
@@ -145,7 +142,9 @@ exports.delete = asyncHandler(async (request, response, next) => {
 exports.status = asyncHandler(async (request, response, next) => {
   const buyOrder = request.body.buy_order;
 
-  const statusResponse = await (new Oneclick.MallTransaction(OPTION)).status(buyOrder);
+  const statusResponse = await new Oneclick.MallTransaction(OPTION).status(
+    buyOrder
+  );
 
   let viewData = {
     buyOrder,
@@ -165,7 +164,7 @@ exports.refund = asyncHandler(async (request, response, next) => {
   const childBuyOrder = request.body.child_buy_order;
   const amount = request.body.amount;
 
-  const refundResponse = await (new Oneclick.MallTransaction(OPTION)).refund(
+  const refundResponse = await new Oneclick.MallTransaction(OPTION).refund(
     buyOrder,
     ONECLICK_MALL_CHILD1,
     childBuyOrder,
@@ -192,32 +191,30 @@ exports.bin = asyncHandler(async (request, response, next) => {
     const tbkUser = request.body.tbk_user;
 
     const config = {
-      method: 'post',
+      method: "post",
       maxBodyLength: Infinity,
       url: `https://webpay3gint.transbank.cl/rswebpaytransaction/api/oneclick/v1.2/bin_info`,
-      headers: { 
-        'Tbk-Api-Key-Id': ONECLICK_MALL, 
-        'Tbk-Api-Key-Secret': IntegrationApiKeys.WEBPAY, 
-        'Content-Type': 'application/json'
+      headers: {
+        "Tbk-Api-Key-Id": ONECLICK_MALL,
+        "Tbk-Api-Key-Secret": IntegrationApiKeys.WEBPAY,
+        "Content-Type": "application/json",
       },
-      data : JSON.stringify({ 'tbk_user': tbkUser })
+      data: JSON.stringify({ tbk_user: tbkUser }),
     };
 
     const resp = await axios.request(config);
     let viewData = {
       tbkUser,
-      binResponse: resp.data
+      binResponse: resp.data,
     };
-  
+
     response.render("oneclick_mall_bin/bin", {
       step: "Bin de la Tarjeta inscrita",
       stepDescription:
         "En este paso te mostraremos la información del bin de la tarjeta.",
       viewData,
     });
-
   } catch (error) {
-      console.error(error);
+    console.error(error);
   }
 });
-
