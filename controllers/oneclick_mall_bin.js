@@ -188,34 +188,30 @@ exports.refund = asyncHandler(async (request, response, next) => {
 });
 
 exports.bin = asyncHandler(async (request, response, next) => {
-  try {
-    const tbkUser = request.body.tbk_user;
+  const tbkUser = request.body.tbk_user;
 
-    const config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: `https://webpay3gint.transbank.cl/rswebpaytransaction/api/oneclick/v1.2/bin_info`,
-      headers: {
-        "Tbk-Api-Key-Id": ONECLICK_MALL,
+  const config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `https://webpay3gint.transbank.cl/rswebpaytransaction/api/oneclick/v1.2/bin_info`,
+    headers: {
+      "Tbk-Api-Key-Id": ONECLICK_MALL,
       "Tbk-Api-Key-Secret": ONECLICK_MALL_BIN_API_KEY,
-        "Content-Type": "application/json",
-      },
-      data: JSON.stringify({ tbk_user: tbkUser }),
-    };
+      "Content-Type": "application/json",
+    },
+    data: JSON.stringify({ tbk_user: tbkUser }),
+  };
 
-    const resp = await axios.request(config);
-    let viewData = {
-      tbkUser,
-      binResponse: resp.data,
-    };
+  const resp = await axios.request(config);
+  let viewData = {
+    tbkUser,
+    binResponse: resp.data,
+  };
 
-    response.render("oneclick_mall_bin/bin", {
-      step: "Bin de la Tarjeta inscrita",
-      stepDescription:
-        "En este paso te mostraremos la información del bin de la tarjeta.",
-      viewData,
-    });
-  } catch (error) {
-    console.error(error);
-  }
+  response.render("oneclick_mall_bin/bin", {
+    step: "Bin de la Tarjeta inscrita",
+    stepDescription:
+      "En este paso te mostraremos la información del bin de la tarjeta.",
+    viewData,
+  });
 });
