@@ -8,9 +8,10 @@ const Options = require("transbank-sdk").Options;
 const ApiConstants = require("transbank-sdk").ApiConstants;
 
 const ONECLICK_MALL = "597060000001";
+const ONECLICK_MALL_BIN_API_KEY = "d8f06df8-39c7-4f01-8e74-b383c19ae836";
 const OPTION = new Options(
   ONECLICK_MALL,
-  "d8f06df8-39c7-4f01-8e74-b383c19ae836",
+  ONECLICK_MALL_BIN_API_KEY,
   Environment.Integration
 );
 const ONECLICK_MALL_CHILD1 = "597060000002";
@@ -196,7 +197,7 @@ exports.bin = asyncHandler(async (request, response, next) => {
       url: `https://webpay3gint.transbank.cl/rswebpaytransaction/api/oneclick/v1.2/bin_info`,
       headers: {
         "Tbk-Api-Key-Id": ONECLICK_MALL,
-        "Tbk-Api-Key-Secret": IntegrationApiKeys.WEBPAY,
+      "Tbk-Api-Key-Secret": ONECLICK_MALL_BIN_API_KEY,
         "Content-Type": "application/json",
       },
       data: JSON.stringify({ tbk_user: tbkUser }),
